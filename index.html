@@ -494,7 +494,7 @@ tbody tr:hover td{background:var(--bg3);color:var(--text);}
   </div>
   <div class="drawer-body">
     <div class="drawer-section">
-      <div class="drawer-section-title">Resumen del día</div>
+      <div class="drawer-section-title" id="dr-title-resumen">Resumen del día</div>
       <div class="drawer-kpis">
         <div class="drawer-kpi"><div class="drawer-kpi-val" id="dr-horas" style="color:var(--accent)">—</div><div class="drawer-kpi-label">horas trabajadas</div></div>
         <div class="drawer-kpi"><div class="drawer-kpi-val" id="dr-pct" style="color:var(--green)">—</div><div class="drawer-kpi-label">% actividad</div></div>
@@ -508,7 +508,7 @@ tbody tr:hover td{background:var(--bg3);color:var(--text);}
       </div>
     </div>
     <div class="drawer-section">
-      <div class="drawer-section-title">Línea de tiempo — actividad vs inactividad</div>
+      <div class="drawer-section-title" id="dr-title-timeline">Línea de tiempo — actividad vs inactividad</div>
       <div class="timeline-hours" id="dr-tl-hours"></div>
       <div class="timeline-bar" id="dr-tl-bar"></div>
       <div class="timeline-legend">
@@ -518,11 +518,11 @@ tbody tr:hover td{background:var(--bg3);color:var(--text);}
       </div>
     </div>
     <div class="drawer-section">
-      <div class="drawer-section-title">Aplicaciones — tiempo de uso hoy</div>
+      <div class="drawer-section-title" id="dr-title-apps">Aplicaciones — tiempo de uso hoy</div>
       <div id="dr-apps"></div>
     </div>
     <div class="drawer-section">
-      <div class="drawer-section-title">Períodos de inactividad detectados hoy</div>
+      <div class="drawer-section-title" id="dr-title-inacts">Períodos de inactividad detectados hoy</div>
       <div id="dr-inacts"></div>
     </div>
     <div class="drawer-section">
@@ -899,6 +899,14 @@ window.filtrarTablero = function(e) {
 // ══ DRAWER ═══════════════════════════════════════════════
 window.openDrawer = function(uid) {
   const c = DC.find(x=>x.id===uid); if(!c) return;
+  // Update section titles based on active period
+  const pLabel = periodo === 'dia' ? 'del día' : 'de la ' + periodoLabel();
+  const pLabelCap = periodo === 'dia' ? 'hoy' : periodoLabel();
+  const setTitle = function(id, txt) { const el=document.getElementById(id); if(el) el.textContent=txt; };
+  setTitle('dr-title-resumen',  'Resumen ' + pLabel);
+  setTitle('dr-title-timeline', 'Línea de tiempo — actividad vs inactividad');
+  setTitle('dr-title-apps',     'Aplicaciones — tiempo de uso ' + pLabelCap);
+  setTitle('dr-title-inacts',   'Períodos de inactividad ' + pLabelCap);
   document.getElementById('dr-avatar').className = 'drawer-avatar '+c.color;
   document.getElementById('dr-avatar').textContent = INI(c.nombre);
   document.getElementById('dr-name').textContent = c.nombre;
