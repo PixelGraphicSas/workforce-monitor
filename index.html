@@ -455,6 +455,25 @@ tbody tr:hover td{background:var(--bg3);color:var(--text);}
           </div>
         </div>
         <button class="btn-save" onclick="guardarConfiguracion()">Guardar configuración</button>
+
+        <!-- GESTIÓN DE COLABORADORES -->
+        <div style="margin-top:28px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <div>
+              <div style="font-family:var(--font-head);font-size:16px;font-weight:600;">Gestión de colaboradores</div>
+              <div style="font-size:12px;color:var(--text2);margin-top:3px;">Edita nombre, rol, avatar y estado de cada miembro</div>
+            </div>
+            <button class="btn-add" onclick="openModalColaborador()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Nuevo colaborador
+            </button>
+          </div>
+          <div class="panel" style="overflow:visible;">
+            <div id="cfg-colabs-list">
+              <div class="loader-wrap"><div class="spinner"></div></div>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -538,6 +557,41 @@ tbody tr:hover td{background:var(--bg3);color:var(--text);}
     <div class="form-group"><label class="form-label">Rol</label><select id="new-rol" class="form-input"><option value="colaborador">Colaborador</option><option value="supervisor">Supervisor</option><option value="admin">Administrador</option></select></div>
     <div id="modal-error" class="login-error" style="margin-top:0;margin-bottom:12px"></div>
     <div class="modal-actions"><button class="btn-cancel" onclick="closeModal('modal-colab')">Cancelar</button><button class="btn-primary" style="width:auto;padding:9px 24px" onclick="crearColaborador()">Crear colaborador</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Editar colaborador -->
+<div class="modal-overlay" id="modal-edit-colab">
+  <div class="modal" style="width:500px;max-width:96vw">
+    <button class="modal-close" onclick="closeModal('modal-edit-colab')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <div class="modal-title">Editar colaborador</div>
+    <input type="hidden" id="edit-uid"/>
+    <div style="display:flex;align-items:center;gap:20px;margin-bottom:20px;padding:16px;background:var(--bg3);border-radius:12px;">
+      <div style="position:relative;cursor:pointer;flex-shrink:0;" onclick="document.getElementById('edit-avatar-input').click()">
+        <div id="edit-avatar-preview" style="width:72px;height:72px;border-radius:50%;background:var(--bg4);border:2px dashed var(--border2);display:flex;align-items:center;justify-content:center;overflow:hidden;font-family:var(--font-head);font-size:22px;font-weight:700;"></div>
+        <div style="position:absolute;bottom:0;right:0;width:22px;height:22px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg3);">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+      </div>
+      <input type="file" id="edit-avatar-input" accept="image/*" style="display:none" onchange="previewEditAvatar(this)"/>
+      <div>
+        <div style="font-size:13px;font-weight:500;margin-bottom:4px;">Foto de perfil</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.5;">Haz clic en el avatar para cambiar la foto. Se comprimirá a 120×120px automáticamente.</div>
+        <button onclick="removeEditAvatar()" style="margin-top:8px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:var(--font-mono);padding:0;">Eliminar foto</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">Nombre completo</label><input type="text" id="edit-nombre" class="form-input" placeholder="Nombre"/></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">Correo</label><input type="email" id="edit-email" class="form-input" readonly style="opacity:0.55;cursor:not-allowed;"/></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">Rol</label><select id="edit-rol" class="form-input"><option value="colaborador">Colaborador</option><option value="supervisor">Supervisor</option><option value="admin">Administrador</option></select></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">Estado</label><select id="edit-activo" class="form-input"><option value="true">Activo</option><option value="false">Desactivado</option></select></div>
+    </div>
+    <div style="margin-top:14px;"><label class="form-label">Nueva contraseña <span style="font-weight:400;text-transform:none;letter-spacing:0">(dejar vacío para no cambiar)</span></label><input type="password" id="edit-pass" class="form-input" placeholder="Mínimo 6 caracteres"/></div>
+    <div id="edit-modal-error" class="login-error" style="margin-top:12px;margin-bottom:0"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-edit-colab')">Cancelar</button>
+      <button class="btn-primary" style="width:auto;padding:9px 28px" onclick="guardarEdicionColaborador()">Guardar cambios</button>
+    </div>
   </div>
 </div>
 
@@ -763,6 +817,7 @@ window.showView = function(v, el) {
   document.getElementById('page-title').textContent = T[v];
   refreshAll();
   if(v==='screenshots') renderScreenshots();
+  if(v==='configuracion') setTimeout(renderCfgColabs, 50);
 };
 
 // ══ TABLERO ══════════════════════════════════════════════
@@ -1245,6 +1300,159 @@ window.crearColaborador = async function() {
       errEl.textContent=m[e.code]||e.message; errEl.style.display='block';
     }
   }
+};
+
+// ══ GESTIÓN DE COLABORADORES (Configuración) ════════════
+function renderCfgColabs() {
+  const el = document.getElementById('cfg-colabs-list');
+  if (!el) return;
+  const rows = DC.map(function(colab) {
+    const avatarHTML = colab.avatarUrl
+      ? '<img src="'+colab.avatarUrl+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">'
+      : INI(colab.nombre);
+    const faded = colab.activo === false ? 'opacity:0.5;' : '';
+    const row = document.createElement('div');
+    row.className = 'config-row';
+    row.style.cssText = faded + 'align-items:center;padding:12px 20px;';
+    // avatar
+    const av = document.createElement('div');
+    av.className = colab.color;
+    av.style.cssText = 'width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:13px;font-weight:700;flex-shrink:0;overflow:hidden;margin-right:14px;';
+    av.innerHTML = avatarHTML;
+    row.appendChild(av);
+    // info
+    const info = document.createElement('div');
+    info.style.cssText = 'flex:1;min-width:0;';
+    info.innerHTML = '<div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+colab.nombre+'</div>'
+      + '<div style="font-size:11px;color:var(--text2);font-family:var(--font-mono);margin-top:1px;">'+colab.email+' · '+colab.rol+'</div>';
+    row.appendChild(info);
+    // status pill
+    const pill = document.createElement('div');
+    pill.className = 'status-pill ' + colab.status;
+    pill.style.marginRight = '12px';
+    pill.textContent = SL(colab.status);
+    row.appendChild(pill);
+    // edit button
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn';
+    btn.style.cssText = 'display:flex;align-items:center;gap:6px;white-space:nowrap;';
+    btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Editar';
+    btn.addEventListener('click', function() { openEditColab(colab.id); });
+    row.appendChild(btn);
+    return row;
+  });
+  el.innerHTML = '';
+  rows.forEach(function(r) { el.appendChild(r); });
+}
+
+window.openEditColab = function(uid) {
+  const colab = DC.find(x => x.id === uid);
+  if (!colab) return;
+  document.getElementById('edit-uid').value = uid;
+  document.getElementById('edit-nombre').value = colab.nombre || '';
+  document.getElementById('edit-email').value = colab.email || '';
+  document.getElementById('edit-rol').value = colab.rol || 'colaborador';
+  document.getElementById('edit-activo').value = colab.activo === false ? 'false' : 'true';
+  document.getElementById('edit-pass').value = '';
+  document.getElementById('edit-modal-error').style.display = 'none';
+  // Avatar preview
+  const prev = document.getElementById('edit-avatar-preview');
+  if (colab.avatarUrl) {
+    prev.innerHTML = '<img src="'+colab.avatarUrl+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>';
+    prev.style.border = '2px solid var(--accent)';
+  } else {
+    prev.innerHTML = INI(colab.nombre);
+    prev.style.background = 'var(--bg4)';
+    prev.style.border = '2px dashed var(--border2)';
+    prev.className = colab.color;
+    prev.style.color = '';
+  }
+  document.getElementById('edit-avatar-input').value = '';
+  document.getElementById('modal-edit-colab').classList.add('open');
+};
+
+window.previewEditAvatar = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const prev = document.getElementById('edit-avatar-preview');
+    prev.innerHTML = '<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>';
+    prev.style.border = '2px solid var(--accent)';
+  };
+  reader.readAsDataURL(file);
+};
+
+window.removeEditAvatar = function() {
+  const prev = document.getElementById('edit-avatar-preview');
+  const uid = document.getElementById('edit-uid').value;
+  const colab = DC.find(x => x.id === uid);
+  prev.innerHTML = colab ? INI(colab.nombre) : '?';
+  prev.style.border = '2px dashed var(--border2)';
+  prev.style.background = 'var(--bg4)';
+  document.getElementById('edit-avatar-input').value = '';
+  // Mark as removed
+  prev.dataset.removed = 'true';
+};
+
+window.guardarEdicionColaborador = async function() {
+  const uid    = document.getElementById('edit-uid').value;
+  const nombre = document.getElementById('edit-nombre').value.trim();
+  const rol    = document.getElementById('edit-rol').value;
+  const activo = document.getElementById('edit-activo').value === 'true';
+  const pass   = document.getElementById('edit-pass').value.trim();
+  const errEl  = document.getElementById('edit-modal-error');
+  errEl.style.display = 'none';
+
+  if (!nombre) { errEl.textContent = 'El nombre es requerido'; errEl.style.display = 'block'; return; }
+  if (pass && pass.length < 6) { errEl.textContent = 'La contraseña debe tener mínimo 6 caracteres'; errEl.style.display = 'block'; return; }
+
+  // Determine avatar
+  let avatarUrl = DC.find(x=>x.id===uid)?.avatarUrl || '';
+  const prev = document.getElementById('edit-avatar-preview');
+  if (prev.dataset.removed === 'true') {
+    avatarUrl = '';
+    delete prev.dataset.removed;
+  }
+  const avatarFile = document.getElementById('edit-avatar-input').files[0];
+  if (avatarFile) {
+    try { avatarUrl = await uploadAvatarToFirebase(avatarFile, uid); }
+    catch(e) { console.warn('Avatar upload failed:', e); }
+  }
+
+  // Update local DC data immediately (optimistic)
+  const colab = DC.find(x => x.id === uid);
+  if (colab) {
+    colab.nombre = nombre;
+    colab.rol = rol;
+    colab.activo = activo;
+    colab.avatarUrl = avatarUrl;
+  }
+
+  // Update Firestore if available
+  if (window._fb) {
+    try {
+      await window._fb.updateDoc(
+        window._fb.doc(window._fb.db, 'usuarios', uid),
+        { nombre, rol, activo, avatarUrl }
+      );
+      // Password change requires Admin SDK — inform user
+      if (pass) toast('Datos guardados. Para cambiar la contraseña usa Firebase Console → Authentication', 'success');
+      else toast('Colaborador actualizado correctamente', 'success');
+    } catch(e) {
+      errEl.textContent = e.message;
+      errEl.style.display = 'block';
+      return;
+    }
+  } else {
+    toast(nombre + ' actualizado (demo)', 'success');
+  }
+
+  closeModal('modal-edit-colab');
+  // Re-render all views that show collaborator data
+  renderCfgColabs();
+  if (vistaActual === 'colaboradores') renderColaboradores();
+  if (vistaActual === 'tablero') renderLista();
 };
 
 // ══ AUTH ═════════════════════════════════════════════════
