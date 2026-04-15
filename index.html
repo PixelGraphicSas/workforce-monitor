@@ -8,1681 +8,813 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --bg:       #08090B;
-  --bg2:      #0F1116;
-  --bg3:      #161A22;
-  --bg4:      #1C2130;
-  --border:   rgba(255,255,255,0.07);
-  --border2:  rgba(255,255,255,0.12);
-  --text:     #E8EAF0;
-  --text2:    #8B92A8;
-  --text3:    #555D72;
-  --accent:   #4F8EF7;
-  --accent2:  #2563EB;
-  --green:    #22C55E;
-  --green-bg: rgba(34,197,94,0.1);
-  --red:      #EF4444;
-  --red-bg:   rgba(239,68,68,0.1);
-  --amber:    #F59E0B;
-  --amber-bg: rgba(245,158,11,0.1);
-  --font-head: 'Syne', sans-serif;
-  --font-mono: 'DM Mono', monospace;
-  --font-body: 'DM Sans', sans-serif;
+:root{
+  --bg:#08090B;--bg2:#0F1116;--bg3:#161A22;--bg4:#1C2130;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#E8EAF0;--text2:#8B92A8;--text3:#555D72;
+  --accent:#4F8EF7;--accent2:#2563EB;
+  --green:#22C55E;--green-bg:rgba(34,197,94,0.1);
+  --red:#EF4444;--red-bg:rgba(239,68,68,0.1);
+  --amber:#F59E0B;--amber-bg:rgba(245,158,11,0.1);
+  --font-head:'Syne',sans-serif;--font-mono:'DM Mono',monospace;--font-body:'DM Sans',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:var(--font-body);
-  font-size:14px;
-  min-height:100vh;
-  overflow-x:hidden;
-}
-
-/* ── LOGIN ─────────────────────────────────────────────── */
-#login-screen {
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:var(--bg);
-  position:relative;
-  overflow:hidden;
-}
-#login-screen::before {
-  content:'';
-  position:absolute;
-  width:600px;height:600px;
-  background:radial-gradient(circle, rgba(79,142,247,0.08) 0%, transparent 70%);
-  top:-100px;left:-100px;
-  pointer-events:none;
-}
-#login-screen::after {
-  content:'';
-  position:absolute;
-  width:400px;height:400px;
-  background:radial-gradient(circle, rgba(34,197,94,0.05) 0%, transparent 70%);
-  bottom:-50px;right:-50px;
-  pointer-events:none;
-}
-.login-card {
-  background:var(--bg2);
-  border:1px solid var(--border2);
-  border-radius:20px;
-  padding:48px;
-  width:420px;
-  position:relative;
-  z-index:1;
-}
-.login-logo {
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:40px;
-}
-.login-logo-icon {
-  width:40px;height:40px;
-  background:var(--accent);
-  border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-}
-.login-logo-icon svg { width:22px;height:22px; }
-.login-logo-text {
-  font-family:var(--font-head);
-  font-size:18px;
-  font-weight:700;
-  color:var(--text);
-}
-.login-logo-text span { color:var(--accent); }
-.login-title {
-  font-family:var(--font-head);
-  font-size:26px;
-  font-weight:700;
-  margin-bottom:6px;
-}
-.login-sub { color:var(--text2); font-size:13px; margin-bottom:32px; }
-.form-group { margin-bottom:18px; }
-.form-label {
-  display:block;
-  font-size:11px;
-  font-weight:500;
-  letter-spacing:0.08em;
-  text-transform:uppercase;
-  color:var(--text2);
-  margin-bottom:8px;
-  font-family:var(--font-mono);
-}
-.form-input {
-  width:100%;
-  background:var(--bg3);
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:12px 16px;
-  color:var(--text);
-  font-family:var(--font-body);
-  font-size:14px;
-  outline:none;
-  transition:border-color 0.2s;
-}
-.form-input:focus { border-color:var(--accent); }
-.form-input::placeholder { color:var(--text3); }
-.btn-primary {
-  width:100%;
-  background:var(--accent);
-  color:#fff;
-  border:none;
-  border-radius:10px;
-  padding:13px;
-  font-family:var(--font-head);
-  font-size:14px;
-  font-weight:600;
-  cursor:pointer;
-  transition:background 0.2s, transform 0.1s;
-  margin-top:8px;
-}
-.btn-primary:hover { background:var(--accent2); }
-.btn-primary:active { transform:scale(0.98); }
-.login-error {
-  background:var(--red-bg);
-  border:1px solid rgba(239,68,68,0.3);
-  border-radius:8px;
-  padding:10px 14px;
-  font-size:13px;
-  color:var(--red);
-  margin-top:14px;
-  display:none;
-}
-
-/* ── APP SHELL ──────────────────────────────────────────── */
-#app { display:none; min-height:100vh; }
-
-/* SIDEBAR */
-.sidebar {
-  position:fixed;
-  top:0;left:0;bottom:0;
-  width:220px;
-  background:var(--bg2);
-  border-right:1px solid var(--border);
-  display:flex;
-  flex-direction:column;
-  z-index:100;
-}
-.sidebar-logo {
-  padding:24px 20px 20px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  border-bottom:1px solid var(--border);
-  margin-bottom:8px;
-}
-.sidebar-logo-icon {
-  width:32px;height:32px;
-  background:var(--accent);
-  border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-}
-.sidebar-logo-text {
-  font-family:var(--font-head);
-  font-size:14px;
-  font-weight:700;
-  line-height:1.2;
-}
-.sidebar-logo-text span { color:var(--accent); font-size:11px; font-weight:400; display:block; }
-.nav-section {
-  padding:4px 12px;
-  font-size:10px;
-  font-weight:500;
-  letter-spacing:0.1em;
-  text-transform:uppercase;
-  color:var(--text3);
-  font-family:var(--font-mono);
-  margin:8px 0 4px;
-}
-.nav-item {
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:9px 14px;
-  margin:1px 8px;
-  border-radius:8px;
-  cursor:pointer;
-  transition:background 0.15s, color 0.15s;
-  color:var(--text2);
-  font-size:13px;
-  font-weight:400;
-  user-select:none;
-}
-.nav-item:hover { background:var(--bg3); color:var(--text); }
-.nav-item.active { background:rgba(79,142,247,0.12); color:var(--accent); }
-.nav-item svg { width:16px;height:16px;flex-shrink:0; }
-.nav-item .badge {
-  margin-left:auto;
-  background:var(--red);
-  color:#fff;
-  font-size:10px;
-  font-family:var(--font-mono);
-  padding:1px 6px;
-  border-radius:10px;
-  font-weight:500;
-}
-.sidebar-bottom {
-  margin-top:auto;
-  padding:16px;
-  border-top:1px solid var(--border);
-}
-.user-chip {
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:8px;
-  border-radius:8px;
-  cursor:pointer;
-  transition:background 0.15s;
-}
-.user-chip:hover { background:var(--bg3); }
-.user-avatar {
-  width:30px;height:30px;
-  border-radius:50%;
-  background:var(--accent2);
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-head);
-  font-size:12px;
-  font-weight:700;
-  color:#fff;
-  flex-shrink:0;
-}
-.user-info { flex:1;overflow:hidden; }
-.user-name { font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-.user-role { font-size:10px;color:var(--text2);font-family:var(--font-mono); }
-.btn-logout {
-  background:none;
-  border:none;
-  color:var(--text3);
-  cursor:pointer;
-  padding:4px;
-  border-radius:4px;
-  transition:color 0.15s;
-  display:flex;
-}
-.btn-logout:hover { color:var(--red); }
-
-/* MAIN CONTENT */
-.main {
-  margin-left:220px;
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-}
-.topbar {
-  padding:20px 28px 0;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-.page-title {
-  font-family:var(--font-head);
-  font-size:22px;
-  font-weight:700;
-}
-.page-sub { font-size:12px;color:var(--text2);margin-top:2px; }
-.topbar-right { display:flex;align-items:center;gap:12px; }
-.live-badge {
-  display:flex;align-items:center;gap:6px;
-  background:var(--green-bg);
-  border:1px solid rgba(34,197,94,0.2);
-  border-radius:20px;
-  padding:5px 12px;
-  font-size:11px;
-  font-weight:500;
-  color:var(--green);
-  font-family:var(--font-mono);
-}
-.live-dot {
-  width:6px;height:6px;
-  border-radius:50%;
-  background:var(--green);
-  animation:pulse 2s infinite;
-}
-@keyframes pulse {
-  0%,100%{opacity:1;transform:scale(1);}
-  50%{opacity:0.5;transform:scale(0.8);}
-}
-.content { padding:24px 28px; flex:1; }
-
-/* ── VISTA: TABLERO ENTRADA/SALIDA ──────────────────────── */
-#view-tablero { display:block; }
-#view-colaboradores,#view-screenshots,#view-productividad,#view-planillas,#view-configuracion { display:none; }
-
-/* KPI CARDS */
-.kpi-grid {
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:14px;
-  margin-bottom:24px;
-}
-.kpi-card {
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:20px;
-  position:relative;
-  overflow:hidden;
-  transition:border-color 0.2s;
-}
-.kpi-card:hover { border-color:var(--border2); }
-.kpi-card::before {
-  content:'';
-  position:absolute;
-  top:0;right:0;
-  width:60px;height:60px;
-  border-radius:0 14px 0 60px;
-  opacity:0.06;
-}
-.kpi-card.accent::before { background:var(--accent); }
-.kpi-card.green::before { background:var(--green); }
-.kpi-card.amber::before { background:var(--amber); }
-.kpi-card.red::before { background:var(--red); }
-.kpi-label {
-  font-size:11px;
-  font-weight:500;
-  letter-spacing:0.06em;
-  text-transform:uppercase;
-  color:var(--text2);
-  font-family:var(--font-mono);
-  margin-bottom:10px;
-}
-.kpi-value {
-  font-family:var(--font-head);
-  font-size:32px;
-  font-weight:800;
-  line-height:1;
-  margin-bottom:6px;
-}
-.kpi-card.accent .kpi-value { color:var(--accent); }
-.kpi-card.green .kpi-value  { color:var(--green); }
-.kpi-card.amber .kpi-value  { color:var(--amber); }
-.kpi-card.red .kpi-value    { color:var(--red); }
-.kpi-meta { font-size:11px;color:var(--text3); }
-
-/* TABLERO PRINCIPAL */
-.tablero-grid {
-  display:grid;
-  grid-template-columns:1fr 320px;
-  gap:16px;
-}
-.panel {
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:14px;
-  overflow:hidden;
-}
-.panel-header {
-  padding:16px 20px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-.panel-title {
-  font-family:var(--font-head);
-  font-size:14px;
-  font-weight:600;
-}
-.panel-meta { font-size:11px;color:var(--text2);font-family:var(--font-mono); }
-
-/* LISTA COLABORADORES */
-.colab-list { padding:8px; }
-.colab-row {
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:10px 12px;
-  border-radius:10px;
-  transition:background 0.15s;
-  cursor:default;
-}
-.colab-row:hover { background:var(--bg3); }
-.colab-avatar {
-  width:36px;height:36px;
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-head);
-  font-size:13px;
-  font-weight:700;
-  flex-shrink:0;
-  position:relative;
-}
-.colab-avatar .status-dot {
-  position:absolute;
-  bottom:0;right:0;
-  width:10px;height:10px;
-  border-radius:50%;
-  border:2px solid var(--bg2);
-}
-.colab-avatar .status-dot.online { background:var(--green); }
-.colab-avatar .status-dot.offline { background:var(--text3); }
-.colab-avatar .status-dot.away { background:var(--amber); }
-.colab-info { flex:1;min-width:0; }
-.colab-name { font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-.colab-app  { font-size:11px;color:var(--text2);font-family:var(--font-mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-.colab-time {
-  font-family:var(--font-mono);
-  font-size:12px;
-  color:var(--text2);
-  text-align:right;
-  flex-shrink:0;
-}
-.colab-time .checkin { color:var(--green);font-size:11px;display:block; }
-.colab-time .worked  { font-size:13px;font-weight:500;color:var(--text); }
-
-.status-pill {
-  font-size:10px;
-  font-weight:500;
-  font-family:var(--font-mono);
-  padding:3px 8px;
-  border-radius:10px;
-  flex-shrink:0;
-}
-.status-pill.online  { background:var(--green-bg);color:var(--green);border:1px solid rgba(34,197,94,0.2); }
-.status-pill.offline { background:rgba(85,93,114,0.15);color:var(--text3);border:1px solid var(--border); }
-.status-pill.away    { background:var(--amber-bg);color:var(--amber);border:1px solid rgba(245,158,11,0.2); }
-
-/* PANEL DERECHO: ACTIVIDAD */
-.activity-feed { padding:12px;max-height:480px;overflow-y:auto; }
-.activity-feed::-webkit-scrollbar { width:4px; }
-.activity-feed::-webkit-scrollbar-track { background:transparent; }
-.activity-feed::-webkit-scrollbar-thumb { background:var(--border2);border-radius:2px; }
-.activity-item {
-  display:flex;
-  gap:10px;
-  padding:8px 6px;
-  border-bottom:1px solid var(--border);
-}
-.activity-item:last-child { border-bottom:none; }
-.activity-dot {
-  width:8px;height:8px;
-  border-radius:50%;
-  margin-top:4px;
-  flex-shrink:0;
-}
-.activity-dot.in  { background:var(--green); }
-.activity-dot.out { background:var(--red); }
-.activity-dot.alert { background:var(--amber); }
-.activity-text { flex:1; }
-.activity-name { font-size:12px;font-weight:500; }
-.activity-desc { font-size:11px;color:var(--text2);margin-top:1px; }
-.activity-time { font-size:10px;color:var(--text3);font-family:var(--font-mono);margin-top:2px; }
-
-/* ── VISTA: COLABORADORES ───────────────────────────────── */
-.colab-cards {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:14px;
-}
-.colab-card {
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:20px;
-  transition:border-color 0.2s,transform 0.15s;
-}
-.colab-card:hover { border-color:var(--border2);transform:translateY(-1px); }
-.colab-card-top {
-  display:flex;align-items:center;gap:12px;
-  margin-bottom:16px;
-}
-.colab-card-avatar {
-  width:44px;height:44px;
-  border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-head);
-  font-size:16px;font-weight:700;
-  flex-shrink:0;
-}
-.colab-card-name { font-family:var(--font-head);font-size:15px;font-weight:600; }
-.colab-card-email { font-size:11px;color:var(--text2);margin-top:2px; }
-.colab-card-stats {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-bottom:14px;
-}
-.stat-mini {
-  background:var(--bg3);
-  border-radius:8px;
-  padding:8px 10px;
-}
-.stat-mini-label { font-size:10px;color:var(--text3);font-family:var(--font-mono);margin-bottom:3px; }
-.stat-mini-value { font-family:var(--font-mono);font-size:13px;font-weight:500; }
-.colab-card-actions { display:flex;gap:8px; }
-.btn-sm {
-  flex:1;
-  padding:7px 12px;
-  border-radius:8px;
-  font-size:12px;
-  font-weight:500;
-  cursor:pointer;
-  border:1px solid var(--border);
-  background:var(--bg3);
-  color:var(--text2);
-  font-family:var(--font-body);
-  transition:all 0.15s;
-  text-align:center;
-}
-.btn-sm:hover { border-color:var(--accent);color:var(--accent);background:rgba(79,142,247,0.05); }
-.btn-sm.danger:hover { border-color:var(--red);color:var(--red);background:var(--red-bg); }
-.btn-add {
-  display:flex;align-items:center;gap:8px;
-  padding:10px 18px;
-  background:var(--accent);
-  color:#fff;
-  border:none;
-  border-radius:10px;
-  font-family:var(--font-head);
-  font-size:13px;
-  font-weight:600;
-  cursor:pointer;
-  transition:background 0.15s;
-}
-.btn-add:hover { background:var(--accent2); }
-.btn-add svg { width:16px;height:16px; }
-
-/* ── VISTA: SCREENSHOTS ─────────────────────────────────── */
-.screenshots-toolbar {
-  display:flex;align-items:center;gap:12px;
-  margin-bottom:20px;
-}
-.filter-select {
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:8px;
-  padding:8px 14px;
-  color:var(--text);
-  font-family:var(--font-mono);
-  font-size:12px;
-  outline:none;
-  cursor:pointer;
-  transition:border-color 0.15s;
-}
-.filter-select:focus { border-color:var(--accent); }
-.screenshots-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-  gap:14px;
-}
-.screenshot-card {
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:12px;
-  overflow:hidden;
-  transition:border-color 0.2s,transform 0.15s;
-  cursor:pointer;
-}
-.screenshot-card:hover { border-color:var(--accent);transform:translateY(-2px); }
-.screenshot-thumb {
-  width:100%;
-  aspect-ratio:16/9;
-  background:var(--bg3);
-  display:flex;align-items:center;justify-content:center;
-  position:relative;
-  overflow:hidden;
-}
-.screenshot-thumb-placeholder {
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  color:var(--text3);
-}
-.screenshot-thumb-placeholder svg { width:32px;height:32px; }
-.screenshot-thumb-placeholder span { font-size:11px;font-family:var(--font-mono); }
-.screenshot-info { padding:12px; }
-.screenshot-user { font-size:12px;font-weight:500;margin-bottom:3px; }
-.screenshot-app  { font-size:11px;color:var(--text2);font-family:var(--font-mono);margin-bottom:6px; }
-.screenshot-time { font-size:10px;color:var(--text3);font-family:var(--font-mono); }
-
-/* ── VISTA: PRODUCTIVIDAD ───────────────────────────────── */
-.prod-grid {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
-}
-.bar-chart-wrap { padding:20px; }
-.bar-row {
-  display:flex;align-items:center;gap:10px;
-  margin-bottom:10px;
-}
-.bar-label { font-size:12px;color:var(--text2);width:110px;flex-shrink:0;font-family:var(--font-mono); }
-.bar-track {
-  flex:1;height:6px;
-  background:var(--bg3);
-  border-radius:3px;
-  overflow:hidden;
-}
-.bar-fill {
-  height:100%;
-  border-radius:3px;
-  transition:width 0.8s cubic-bezier(0.4,0,0.2,1);
-}
-.bar-val { font-size:11px;font-family:var(--font-mono);color:var(--text2);width:38px;text-align:right;flex-shrink:0; }
-
-/* ── VISTA: PLANILLAS ───────────────────────────────────── */
-.planilla-toolbar {
-  display:flex;align-items:center;gap:12px;
-  margin-bottom:20px;
-}
-.planilla-table-wrap {
-  background:var(--bg2);
-  border:1px solid var(--border);
-  border-radius:14px;
-  overflow:hidden;
-}
-table { width:100%;border-collapse:collapse; }
-thead th {
-  padding:12px 16px;
-  text-align:left;
-  font-size:10px;
-  font-weight:500;
-  letter-spacing:0.08em;
-  text-transform:uppercase;
-  color:var(--text3);
-  font-family:var(--font-mono);
-  border-bottom:1px solid var(--border);
-  background:var(--bg3);
-}
-tbody td {
-  padding:12px 16px;
-  font-size:13px;
-  border-bottom:1px solid var(--border);
-  color:var(--text2);
-}
-tbody tr:last-child td { border-bottom:none; }
-tbody tr:hover td { background:var(--bg3);color:var(--text); }
-.td-name { font-weight:500;color:var(--text); }
-.td-mono { font-family:var(--font-mono);font-size:12px; }
-.td-hours { font-family:var(--font-mono);font-size:13px;font-weight:500;color:var(--accent); }
-.btn-export {
-  display:flex;align-items:center;gap:7px;
-  padding:9px 18px;
-  background:var(--bg3);
-  border:1px solid var(--border2);
-  border-radius:9px;
-  color:var(--text);
-  font-size:13px;
-  font-weight:500;
-  font-family:var(--font-head);
-  cursor:pointer;
-  transition:all 0.15s;
-}
-.btn-export:hover { border-color:var(--accent);color:var(--accent); }
-.btn-export svg { width:15px;height:15px; }
-
-/* ── VISTA: CONFIGURACIÓN ───────────────────────────────── */
-.config-grid {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
-}
-.config-section { margin-bottom:0; }
-.config-row {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:14px 0;
-  border-bottom:1px solid var(--border);
-}
-.config-row:last-child { border-bottom:none; }
-.config-row-info { flex:1; }
-.config-row-label { font-size:13px;font-weight:500; }
-.config-row-desc  { font-size:11px;color:var(--text2);margin-top:2px; }
-.toggle-wrap {
-  display:flex;align-items:center;
-  width:40px;height:22px;
-  background:var(--bg3);
-  border:1px solid var(--border2);
-  border-radius:11px;
-  cursor:pointer;
-  transition:background 0.2s;
-  position:relative;
-  flex-shrink:0;
-}
-.toggle-wrap.on { background:var(--accent); border-color:var(--accent); }
-.toggle-knob {
-  position:absolute;
-  left:2px;
-  width:16px;height:16px;
-  border-radius:50%;
-  background:#fff;
-  transition:left 0.2s;
-}
-.toggle-wrap.on .toggle-knob { left:20px; }
-.config-input {
-  background:var(--bg3);
-  border:1px solid var(--border);
-  border-radius:8px;
-  padding:6px 12px;
-  color:var(--text);
-  font-family:var(--font-mono);
-  font-size:12px;
-  outline:none;
-  width:90px;
-  text-align:center;
-}
-.config-input:focus { border-color:var(--accent); }
-.btn-save {
-  padding:10px 24px;
-  background:var(--accent);
-  color:#fff;
-  border:none;
-  border-radius:9px;
-  font-family:var(--font-head);
-  font-size:13px;
-  font-weight:600;
-  cursor:pointer;
-  transition:background 0.15s;
-  margin-top:20px;
-}
-.btn-save:hover { background:var(--accent2); }
-
-/* MODAL */
-.modal-overlay {
-  position:fixed;inset:0;
-  background:rgba(8,9,11,0.8);
-  backdrop-filter:blur(4px);
-  z-index:200;
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
-.modal-overlay.open { display:flex; }
-.modal {
-  background:var(--bg2);
-  border:1px solid var(--border2);
-  border-radius:18px;
-  padding:36px;
-  width:460px;
-  max-width:95vw;
-  position:relative;
-}
-.modal-title {
-  font-family:var(--font-head);
-  font-size:20px;
-  font-weight:700;
-  margin-bottom:24px;
-}
-.modal-close {
-  position:absolute;top:18px;right:18px;
-  background:var(--bg3);
-  border:1px solid var(--border);
-  border-radius:8px;
-  width:30px;height:30px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;
-  color:var(--text2);
-  transition:all 0.15s;
-}
-.modal-close:hover { border-color:var(--border2);color:var(--text); }
-.modal-actions { display:flex;gap:10px;justify-content:flex-end;margin-top:24px; }
-.btn-cancel {
-  padding:9px 20px;
-  background:var(--bg3);
-  border:1px solid var(--border);
-  border-radius:9px;
-  color:var(--text2);
-  font-size:13px;
-  font-family:var(--font-head);
-  font-weight:500;
-  cursor:pointer;
-  transition:all 0.15s;
-}
-.btn-cancel:hover { border-color:var(--border2);color:var(--text); }
-
-/* TOAST */
-.toast {
-  position:fixed;bottom:28px;right:28px;
-  background:var(--bg3);
-  border:1px solid var(--border2);
-  border-radius:12px;
-  padding:12px 18px;
-  font-size:13px;
-  display:flex;align-items:center;gap:10px;
-  z-index:300;
-  transform:translateY(80px);
-  opacity:0;
-  transition:transform 0.3s,opacity 0.3s;
-  max-width:320px;
-}
-.toast.show { transform:translateY(0);opacity:1; }
-.toast.success { border-color:rgba(34,197,94,0.3); }
-.toast.error   { border-color:rgba(239,68,68,0.3); }
-.toast-dot { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
-.toast.success .toast-dot { background:var(--green); }
-.toast.error   .toast-dot { background:var(--red); }
-
-/* LOADER */
-.loader-wrap {
-  display:flex;align-items:center;justify-content:center;
-  padding:40px;color:var(--text3);
-  flex-direction:column;gap:12px;
-}
-.spinner {
-  width:24px;height:24px;
-  border:2px solid var(--border2);
-  border-top-color:var(--accent);
-  border-radius:50%;
-  animation:spin 0.7s linear infinite;
-}
-@keyframes spin { to { transform:rotate(360deg); } }
-
-/* EMPTY STATE */
-.empty-state {
-  display:flex;flex-direction:column;align-items:center;
-  padding:60px 20px;
-  color:var(--text3);
-  gap:12px;
-  text-align:center;
-}
-.empty-state svg { width:40px;height:40px;opacity:0.4; }
-.empty-state h3 { font-family:var(--font-head);font-size:16px;color:var(--text2); }
-.empty-state p  { font-size:12px;max-width:280px;line-height:1.6; }
-
-/* COLORS FOR AVATARS */
-.av-blue   { background:rgba(79,142,247,0.15);color:#4F8EF7; }
-.av-green  { background:rgba(34,197,94,0.15);color:#22C55E; }
-.av-amber  { background:rgba(245,158,11,0.15);color:#F59E0B; }
-.av-purple { background:rgba(139,92,246,0.15);color:#8B5CF6; }
-.av-coral  { background:rgba(239,100,80,0.15);color:#EF6450; }
-.av-teal   { background:rgba(20,184,166,0.15);color:#14B8A6; }
-
-/* RESPONSIVE */
-@media(max-width:900px){
-  .kpi-grid{ grid-template-columns:1fr 1fr; }
-  .tablero-grid{ grid-template-columns:1fr; }
-  .prod-grid,.config-grid{ grid-template-columns:1fr; }
-}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;min-height:100vh;overflow-x:hidden;}
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden;}
+#login-screen::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(79,142,247,0.08) 0%,transparent 70%);top:-100px;left:-100px;pointer-events:none;}
+#login-screen::after{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(34,197,94,0.05) 0%,transparent 70%);bottom:-50px;right:-50px;pointer-events:none;}
+.login-card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:48px;width:420px;position:relative;z-index:1;}
+.login-logo{display:flex;align-items:center;gap:12px;margin-bottom:40px;}
+.login-logo-icon{width:40px;height:40px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.login-logo-icon svg{width:22px;height:22px;}
+.login-logo-text{font-family:var(--font-head);font-size:18px;font-weight:700;}
+.login-logo-text span{color:var(--accent);}
+.login-title{font-family:var(--font-head);font-size:26px;font-weight:700;margin-bottom:6px;}
+.login-sub{color:var(--text2);font-size:13px;margin-bottom:32px;}
+.form-group{margin-bottom:18px;}
+.form-label{display:block;font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--text2);margin-bottom:8px;font-family:var(--font-mono);}
+.form-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--text);font-family:var(--font-body);font-size:14px;outline:none;transition:border-color 0.2s;}
+.form-input:focus{border-color:var(--accent);}
+.form-input::placeholder{color:var(--text3);}
+.btn-primary{width:100%;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:13px;font-family:var(--font-head);font-size:14px;font-weight:600;cursor:pointer;transition:background 0.2s;margin-top:8px;}
+.btn-primary:hover{background:var(--accent2);}
+.login-error{background:var(--red-bg);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--red);margin-top:14px;display:none;}
+#app{display:none;min-height:100vh;}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;}
+.sidebar-logo{padding:24px 20px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.sidebar-logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sidebar-logo-text{font-family:var(--font-head);font-size:14px;font-weight:700;line-height:1.2;}
+.sidebar-logo-text span{color:var(--accent);font-size:11px;font-weight:400;display:block;}
+.nav-section{padding:4px 12px;font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);font-family:var(--font-mono);margin:8px 0 4px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 14px;margin:1px 8px;border-radius:8px;cursor:pointer;transition:background 0.15s,color 0.15s;color:var(--text2);font-size:13px;user-select:none;}
+.nav-item:hover{background:var(--bg3);color:var(--text);}
+.nav-item.active{background:rgba(79,142,247,0.12);color:var(--accent);}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;}
+.sidebar-bottom{margin-top:auto;padding:16px;border-top:1px solid var(--border);}
+.user-chip{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;cursor:pointer;transition:background 0.15s;}
+.user-chip:hover{background:var(--bg3);}
+.user-avatar{width:30px;height:30px;border-radius:50%;background:var(--accent2);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.user-info{flex:1;overflow:hidden;}
+.user-name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-role{font-size:10px;color:var(--text2);font-family:var(--font-mono);}
+.btn-logout{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;border-radius:4px;transition:color 0.15s;display:flex;}
+.btn-logout:hover{color:var(--red);}
+.main{margin-left:220px;min-height:100vh;display:flex;flex-direction:column;}
+.topbar{padding:20px 28px 0;display:flex;align-items:center;justify-content:space-between;}
+.page-title{font-family:var(--font-head);font-size:22px;font-weight:700;}
+.page-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+.live-badge{display:flex;align-items:center;gap:6px;background:var(--green-bg);border:1px solid rgba(34,197,94,0.2);border-radius:20px;padding:5px 12px;font-size:11px;font-weight:500;color:var(--green);font-family:var(--font-mono);}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.content{padding:24px 28px;flex:1;}
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.filter-select{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:7px 12px;color:var(--text);font-family:var(--font-mono);font-size:12px;outline:none;cursor:pointer;transition:border-color 0.15s;}
+.filter-select:focus{border-color:var(--accent);}
+.filter-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-size:12px;font-family:var(--font-mono);cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(79,142,247,0.06);}
+.search-input{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:7px 12px;color:var(--text);font-family:var(--font-mono);font-size:12px;outline:none;transition:border-color 0.15s;min-width:180px;}
+.search-input:focus{border-color:var(--accent);}
+.search-input::placeholder{color:var(--text3);}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.kpi-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;overflow:hidden;transition:border-color 0.2s;cursor:pointer;}
+.kpi-card:hover{border-color:var(--border2);}
+.kpi-card::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;border-radius:0 14px 0 60px;opacity:0.06;}
+.kpi-card.accent::before{background:var(--accent);}
+.kpi-card.green::before{background:var(--green);}
+.kpi-card.amber::before{background:var(--amber);}
+.kpi-card.red::before{background:var(--red);}
+.kpi-label{font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--text2);font-family:var(--font-mono);margin-bottom:10px;}
+.kpi-value{font-family:var(--font-head);font-size:32px;font-weight:800;line-height:1;margin-bottom:6px;}
+.kpi-card.accent .kpi-value{color:var(--accent);}
+.kpi-card.green .kpi-value{color:var(--green);}
+.kpi-card.amber .kpi-value{color:var(--amber);}
+.kpi-card.red .kpi-value{color:var(--red);}
+.kpi-meta{font-size:11px;color:var(--text3);}
+.tablero-grid{display:grid;grid-template-columns:1fr 320px;gap:16px;}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.panel-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.panel-title{font-family:var(--font-head);font-size:14px;font-weight:600;}
+.panel-meta{font-size:11px;color:var(--text2);font-family:var(--font-mono);}
+.colab-list{padding:8px;}
+.colab-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;transition:background 0.15s;cursor:pointer;}
+.colab-row:hover{background:var(--bg3);}
+.colab-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:13px;font-weight:700;flex-shrink:0;position:relative;}
+.status-dot{position:absolute;bottom:0;right:0;width:10px;height:10px;border-radius:50%;border:2px solid var(--bg2);}
+.status-dot.online{background:var(--green);}
+.status-dot.offline{background:var(--text3);}
+.status-dot.away{background:var(--amber);}
+.colab-info{flex:1;min-width:0;}
+.colab-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.colab-app{font-size:11px;color:var(--text2);font-family:var(--font-mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.colab-time{font-family:var(--font-mono);font-size:12px;text-align:right;flex-shrink:0;}
+.colab-time .checkin{color:var(--green);font-size:11px;display:block;}
+.colab-time .worked{font-size:13px;font-weight:500;color:var(--text);}
+.status-pill{font-size:10px;font-weight:500;font-family:var(--font-mono);padding:3px 8px;border-radius:10px;flex-shrink:0;}
+.status-pill.online{background:var(--green-bg);color:var(--green);border:1px solid rgba(34,197,94,0.2);}
+.status-pill.offline{background:rgba(85,93,114,0.15);color:var(--text3);border:1px solid var(--border);}
+.status-pill.away{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(245,158,11,0.2);}
+.activity-feed{padding:12px;max-height:480px;overflow-y:auto;}
+.activity-feed::-webkit-scrollbar{width:4px;}
+.activity-feed::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.activity-item{display:flex;gap:10px;padding:8px 6px;border-bottom:1px solid var(--border);}
+.activity-item:last-child{border-bottom:none;}
+.activity-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0;}
+.activity-dot.in{background:var(--green);}
+.activity-dot.out{background:var(--red);}
+.activity-dot.alert{background:var(--amber);}
+.activity-text{flex:1;}
+.activity-name{font-size:12px;font-weight:500;}
+.activity-desc{font-size:11px;color:var(--text2);margin-top:1px;}
+.activity-time{font-size:10px;color:var(--text3);font-family:var(--font-mono);margin-top:2px;}
+/* DRAWER */
+.drawer-overlay{position:fixed;inset:0;background:rgba(8,9,11,0.65);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.25s;}
+.drawer-overlay.open{opacity:1;pointer-events:all;}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:480px;background:var(--bg2);border-left:1px solid var(--border2);z-index:201;transform:translateX(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;display:flex;flex-direction:column;}
+.drawer.open{transform:translateX(0);}
+.drawer::-webkit-scrollbar{width:4px;}
+.drawer::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.drawer-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;position:sticky;top:0;background:var(--bg2);z-index:1;}
+.drawer-avatar{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:18px;font-weight:700;flex-shrink:0;}
+.drawer-name{font-family:var(--font-head);font-size:17px;font-weight:700;}
+.drawer-email{font-size:11px;color:var(--text2);font-family:var(--font-mono);margin-top:2px;}
+.drawer-close{background:var(--bg3);border:1px solid var(--border);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);transition:all 0.15s;flex-shrink:0;}
+.drawer-close:hover{color:var(--text);border-color:var(--border2);}
+.drawer-body{padding:20px 24px;flex:1;}
+.drawer-section{margin-bottom:24px;}
+.drawer-section-title{font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);font-family:var(--font-mono);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.drawer-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.drawer-kpi{background:var(--bg3);border-radius:10px;padding:12px;text-align:center;}
+.drawer-kpi-val{font-family:var(--font-head);font-size:22px;font-weight:700;margin-bottom:3px;}
+.drawer-kpi-label{font-size:10px;color:var(--text3);font-family:var(--font-mono);}
+.dr-meta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:4px;}
+.dr-meta-item{}
+.dr-meta-label{font-size:10px;color:var(--text3);font-family:var(--font-mono);margin-bottom:4px;}
+.dr-meta-val{font-family:var(--font-mono);font-size:13px;}
+.timeline-hours{display:flex;justify-content:space-between;font-size:9px;color:var(--text3);font-family:var(--font-mono);margin-bottom:5px;}
+.timeline-bar{height:24px;border-radius:8px;overflow:hidden;background:var(--bg4);display:flex;}
+.tl-seg{height:100%;}
+.tl-seg.active{background:var(--green);}
+.tl-seg.inactive{background:var(--red);opacity:0.75;}
+.tl-seg.empty{background:var(--bg4);}
+.timeline-legend{display:flex;gap:16px;margin-top:8px;}
+.tl-legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text3);font-family:var(--font-mono);}
+.tl-legend-dot{width:8px;height:8px;border-radius:2px;}
+.app-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+.app-name{font-size:12px;font-family:var(--font-mono);color:var(--text2);width:88px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.app-track{flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.app-fill{height:100%;background:var(--accent);border-radius:3px;transition:width 0.7s cubic-bezier(0.4,0,0.2,1);}
+.app-time{font-size:11px;font-family:var(--font-mono);color:var(--text2);width:36px;text-align:right;flex-shrink:0;}
+.inact-tbl{width:100%;border-collapse:collapse;}
+.inact-tbl th{font-size:10px;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.06em;padding:0 8px 8px 0;text-align:left;font-weight:500;}
+.inact-tbl td{font-size:12px;font-family:var(--font-mono);padding:6px 8px 6px 0;border-top:1px solid var(--border);color:var(--text2);}
+.inact-tbl td:first-child{color:var(--amber);}
+.inact-badge{font-size:10px;padding:2px 7px;border-radius:8px;background:var(--amber-bg);color:var(--amber);border:1px solid rgba(245,158,11,0.2);}
+/* Cards colaboradores */
+.colab-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.colab-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;transition:border-color 0.2s,transform 0.15s;cursor:pointer;}
+.colab-card:hover{border-color:var(--accent);transform:translateY(-1px);}
+.colab-card-top{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.colab-card-avatar{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:16px;font-weight:700;flex-shrink:0;}
+.colab-card-name{font-family:var(--font-head);font-size:15px;font-weight:600;}
+.colab-card-email{font-size:11px;color:var(--text2);margin-top:2px;}
+.colab-card-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.stat-mini{background:var(--bg3);border-radius:8px;padding:8px 10px;}
+.stat-mini-label{font-size:10px;color:var(--text3);font-family:var(--font-mono);margin-bottom:3px;}
+.stat-mini-value{font-family:var(--font-mono);font-size:13px;font-weight:500;}
+.colab-card-actions{display:flex;gap:8px;}
+.btn-sm{flex:1;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-family:var(--font-body);transition:all 0.15s;text-align:center;}
+.btn-sm:hover{border-color:var(--accent);color:var(--accent);}
+.btn-sm.danger:hover{border-color:var(--red);color:var(--red);}
+.btn-add{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-family:var(--font-head);font-size:13px;font-weight:600;cursor:pointer;transition:background 0.15s;}
+.btn-add:hover{background:var(--accent2);}
+/* Screenshots */
+.screenshots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
+.screenshot-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color 0.2s,transform 0.15s;cursor:pointer;}
+.screenshot-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.screenshot-thumb{width:100%;aspect-ratio:16/9;background:var(--bg3);display:flex;align-items:center;justify-content:center;}
+.screenshot-thumb svg{width:32px;height:32px;color:var(--text3);}
+.screenshot-info{padding:12px;}
+.screenshot-user{font-size:12px;font-weight:500;margin-bottom:3px;}
+.screenshot-app{font-size:11px;color:var(--text2);font-family:var(--font-mono);margin-bottom:4px;}
+.screenshot-time{font-size:10px;color:var(--text3);font-family:var(--font-mono);}
+/* Productividad */
+.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.bar-chart-wrap{padding:20px;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.bar-label{font-size:12px;color:var(--text2);width:80px;flex-shrink:0;font-family:var(--font-mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bar-track{flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;transition:width 0.8s cubic-bezier(0.4,0,0.2,1);}
+.bar-val{font-size:11px;font-family:var(--font-mono);color:var(--text2);width:42px;text-align:right;flex-shrink:0;}
+/* Planillas */
+.planilla-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+thead th{padding:12px 16px;text-align:left;font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);font-family:var(--font-mono);border-bottom:1px solid var(--border);background:var(--bg3);}
+tbody td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--border);color:var(--text2);}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:var(--bg3);color:var(--text);}
+.td-name{font-weight:500;color:var(--text);}
+.td-mono{font-family:var(--font-mono);font-size:12px;}
+.td-hours{font-family:var(--font-mono);font-size:13px;font-weight:500;color:var(--accent);}
+.btn-export{display:flex;align-items:center;gap:7px;padding:9px 18px;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;color:var(--text);font-size:13px;font-weight:500;font-family:var(--font-head);cursor:pointer;transition:all 0.15s;}
+.btn-export:hover{border-color:var(--accent);color:var(--accent);}
+/* Config */
+.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.config-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);}
+.config-row:last-child{border-bottom:none;}
+.config-row-info{flex:1;}
+.config-row-label{font-size:13px;font-weight:500;}
+.config-row-desc{font-size:11px;color:var(--text2);margin-top:2px;}
+.toggle-wrap{display:flex;align-items:center;width:40px;height:22px;background:var(--bg3);border:1px solid var(--border2);border-radius:11px;cursor:pointer;transition:background 0.2s;position:relative;flex-shrink:0;}
+.toggle-wrap.on{background:var(--accent);border-color:var(--accent);}
+.toggle-knob{position:absolute;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left 0.2s;}
+.toggle-wrap.on .toggle-knob{left:20px;}
+.config-input{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:6px 12px;color:var(--text);font-family:var(--font-mono);font-size:12px;outline:none;width:90px;text-align:center;}
+.config-input:focus{border-color:var(--accent);}
+.btn-save{padding:10px 24px;background:var(--accent);color:#fff;border:none;border-radius:9px;font-family:var(--font-head);font-size:13px;font-weight:600;cursor:pointer;transition:background 0.15s;margin-top:20px;}
+.btn-save:hover{background:var(--accent2);}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(8,9,11,0.85);z-index:300;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:36px;width:460px;max-width:95vw;position:relative;}
+.modal-title{font-family:var(--font-head);font-size:20px;font-weight:700;margin-bottom:24px;}
+.modal-close{position:absolute;top:18px;right:18px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);}
+.modal-close:hover{color:var(--text);}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:24px;}
+.btn-cancel{padding:9px 20px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;color:var(--text2);font-size:13px;font-family:var(--font-head);cursor:pointer;}
+.btn-cancel:hover{color:var(--text);}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px 18px;font-size:13px;display:flex;align-items:center;gap:10px;z-index:400;transform:translateY(80px);opacity:0;transition:transform 0.3s,opacity 0.3s;max-width:320px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{border-color:rgba(34,197,94,0.3);}
+.toast.error{border-color:rgba(239,68,68,0.3);}
+.toast-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.toast.success .toast-dot{background:var(--green);}
+.toast.error .toast-dot{background:var(--red);}
+.spinner{width:24px;height:24px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-wrap{display:flex;align-items:center;justify-content:center;padding:40px;flex-direction:column;gap:10px;color:var(--text3);}
+.empty-state{display:flex;flex-direction:column;align-items:center;padding:48px 20px;color:var(--text3);gap:10px;text-align:center;}
+.empty-state p{font-size:12px;max-width:260px;line-height:1.6;}
+.av-blue{background:rgba(79,142,247,0.15);color:#4F8EF7;}
+.av-green{background:rgba(34,197,94,0.15);color:#22C55E;}
+.av-amber{background:rgba(245,158,11,0.15);color:#F59E0B;}
+.av-purple{background:rgba(139,92,246,0.15);color:#8B5CF6;}
+.av-coral{background:rgba(239,100,80,0.15);color:#EF6450;}
+.av-teal{background:rgba(20,184,166,0.15);color:#14B8A6;}
+@media(max-width:900px){.kpi-grid{grid-template-columns:1fr 1fr;}.tablero-grid,.prod-grid,.config-grid{grid-template-columns:1fr;}.drawer{width:100%;}}
 </style>
 </head>
 <body>
 
-<!-- ══ LOGIN ══════════════════════════════════════════════ -->
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">
-      <div class="login-logo-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
-          <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
-          <circle cx="7" cy="10" r="2"/><circle cx="17" cy="10" r="2"/>
-          <path d="M9 10h6"/>
-        </svg>
-      </div>
+      <div class="login-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><circle cx="7" cy="10" r="2"/><circle cx="17" cy="10" r="2"/><path d="M9 10h6"/></svg></div>
       <div class="login-logo-text">WorkForce<span>Monitor · Pixel Graphic</span></div>
     </div>
     <div class="login-title">Bienvenido</div>
     <div class="login-sub">Accede con tu cuenta de administrador</div>
-    <div class="form-group">
-      <label class="form-label">Correo electrónico</label>
-      <input type="email" id="login-email" class="form-input" placeholder="admin@pixelgraphic.co"/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Contraseña</label>
-      <input type="password" id="login-pass" class="form-input" placeholder="••••••••"/>
-    </div>
+    <div class="form-group"><label class="form-label">Correo electrónico</label><input type="email" id="login-email" class="form-input" placeholder="admin@pixelgraphic.co"/></div>
+    <div class="form-group"><label class="form-label">Contraseña</label><input type="password" id="login-pass" class="form-input" placeholder="••••••••"/></div>
     <button class="btn-primary" onclick="doLogin()">Ingresar al sistema</button>
     <div id="login-error" class="login-error"></div>
   </div>
 </div>
 
-<!-- ══ APP ════════════════════════════════════════════════ -->
+<!-- APP -->
 <div id="app">
-
-  <!-- SIDEBAR -->
   <nav class="sidebar">
     <div class="sidebar-logo">
-      <div class="sidebar-logo-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round">
-          <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
-        </svg>
-      </div>
+      <div class="sidebar-logo-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
       <div class="sidebar-logo-text">WorkForce<span>Monitor</span></div>
     </div>
-
     <div class="nav-section">Principal</div>
-    <div class="nav-item active" onclick="showView('tablero',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      Tablero en vivo
-    </div>
-    <div class="nav-item" onclick="showView('colaboradores',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="19" cy="7" r="2"/><path d="M23 21v-1a3 3 0 0 0-2-2.83"/></svg>
-      Colaboradores
-    </div>
-
+    <div class="nav-item active" onclick="showView('tablero',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Tablero en vivo</div>
+    <div class="nav-item" onclick="showView('colaboradores',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="19" cy="7" r="2"/><path d="M23 21v-1a3 3 0 0 0-2-2.83"/></svg>Colaboradores</div>
     <div class="nav-section">Monitoreo</div>
-    <div class="nav-item" onclick="showView('screenshots',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-      Capturas de pantalla
-    </div>
-    <div class="nav-item" onclick="showView('productividad',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      Productividad
-    </div>
-
+    <div class="nav-item" onclick="showView('screenshots',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Capturas de pantalla</div>
+    <div class="nav-item" onclick="showView('productividad',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Productividad</div>
     <div class="nav-section">Administración</div>
-    <div class="nav-item" onclick="showView('planillas',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      Planillas de horas
-    </div>
-    <div class="nav-item" onclick="showView('configuracion',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
-      Configuración
-    </div>
-
+    <div class="nav-item" onclick="showView('planillas',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Planillas de horas</div>
+    <div class="nav-item" onclick="showView('configuracion',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>Configuración</div>
     <div class="sidebar-bottom">
       <div class="user-chip">
         <div class="user-avatar" id="sidebar-avatar">AD</div>
-        <div class="user-info">
-          <div class="user-name" id="sidebar-name">Administrador</div>
-          <div class="user-role">admin</div>
-        </div>
-        <button class="btn-logout" onclick="doLogout()" title="Cerrar sesión">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        </button>
+        <div class="user-info"><div class="user-name" id="sidebar-name">Administrador</div><div class="user-role">admin</div></div>
+        <button class="btn-logout" onclick="doLogout()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
       </div>
     </div>
   </nav>
 
-  <!-- MAIN -->
   <div class="main">
     <div class="topbar">
-      <div>
-        <div class="page-title" id="page-title">Tablero en vivo</div>
-        <div class="page-sub" id="page-sub">Monitoreo en tiempo real · <span id="current-date"></span></div>
-      </div>
-      <div class="topbar-right">
-        <div class="live-badge"><div class="live-dot"></div>En vivo</div>
-      </div>
+      <div><div class="page-title" id="page-title">Tablero en vivo</div><div class="page-sub" id="page-sub"></div></div>
+      <div><div class="live-badge"><div class="live-dot"></div>En vivo</div></div>
     </div>
-
     <div class="content">
 
-      <!-- ══ VISTA: TABLERO ══════════════════════════════════ -->
+      <!-- TABLERO -->
       <div id="view-tablero">
-        <!-- KPIs -->
         <div class="kpi-grid">
-          <div class="kpi-card green">
-            <div class="kpi-label">Activos ahora</div>
-            <div class="kpi-value" id="kpi-activos">0</div>
-            <div class="kpi-meta">colaboradores en línea</div>
-          </div>
-          <div class="kpi-card accent">
-            <div class="kpi-label">Total registrados</div>
-            <div class="kpi-value" id="kpi-total">0</div>
-            <div class="kpi-meta">colaboradores en el sistema</div>
-          </div>
-          <div class="kpi-card amber">
-            <div class="kpi-label">Ausentes hoy</div>
-            <div class="kpi-value" id="kpi-ausentes">0</div>
-            <div class="kpi-meta">sin check-in hoy</div>
-          </div>
-          <div class="kpi-card red">
-            <div class="kpi-label">Inactivos</div>
-            <div class="kpi-value" id="kpi-inactivos">0</div>
-            <div class="kpi-meta">sin actividad &gt;15 min</div>
-          </div>
+          <div class="kpi-card green"  onclick="filtrarTablero('online')"><div class="kpi-label">Activos ahora</div><div class="kpi-value" id="kpi-activos">0</div><div class="kpi-meta">en línea</div></div>
+          <div class="kpi-card accent" onclick="filtrarTablero('')"><div class="kpi-label">Total equipo</div><div class="kpi-value" id="kpi-total">0</div><div class="kpi-meta">registrados</div></div>
+          <div class="kpi-card amber"  onclick="filtrarTablero('offline')"><div class="kpi-label">Ausentes hoy</div><div class="kpi-value" id="kpi-ausentes">0</div><div class="kpi-meta">sin check-in</div></div>
+          <div class="kpi-card red"    onclick="filtrarTablero('away')"><div class="kpi-label">Inactivos</div><div class="kpi-value" id="kpi-inactivos">0</div><div class="kpi-meta">cursor quieto &gt;1 min</div></div>
         </div>
-
-        <!-- Tablero grid -->
+        <div class="toolbar">
+          <input type="text" class="search-input" id="tablero-search" placeholder="Buscar colaborador…" oninput="renderLista()"/>
+          <div style="width:1px;height:24px;background:var(--border);flex-shrink:0"></div>
+          <button class="filter-btn active" id="fbtn-all"     onclick="setFE('',this)">Todos</button>
+          <button class="filter-btn"        id="fbtn-online"  onclick="setFE('online',this)">En línea</button>
+          <button class="filter-btn"        id="fbtn-away"    onclick="setFE('away',this)">Inactivos</button>
+          <button class="filter-btn"        id="fbtn-offline" onclick="setFE('offline',this)">Ausentes</button>
+          <div style="margin-left:auto;font-size:11px;color:var(--text3);font-family:var(--font-mono)" id="hora-act">—</div>
+        </div>
         <div class="tablero-grid">
           <div class="panel">
-            <div class="panel-header">
-              <div class="panel-title">Estado del equipo</div>
-              <div class="panel-meta" id="hora-actualizacion">—</div>
-            </div>
-            <div class="colab-list" id="colab-list">
-              <div class="loader-wrap"><div class="spinner"></div><span>Conectando con Firebase…</span></div>
-            </div>
+            <div class="panel-header"><div class="panel-title">Estado del equipo</div><div class="panel-meta" id="conteo-vis">—</div></div>
+            <div class="colab-list" id="colab-list"><div class="loader-wrap"><div class="spinner"></div></div></div>
           </div>
           <div class="panel">
-            <div class="panel-header">
-              <div class="panel-title">Actividad reciente</div>
-              <div class="panel-meta">últimos eventos</div>
-            </div>
-            <div class="activity-feed" id="activity-feed">
-              <div class="loader-wrap"><div class="spinner"></div></div>
-            </div>
+            <div class="panel-header"><div class="panel-title">Actividad reciente</div><div class="panel-meta">últimos eventos</div></div>
+            <div class="activity-feed" id="activity-feed"><div class="loader-wrap"><div class="spinner"></div></div></div>
           </div>
         </div>
       </div>
 
-      <!-- ══ VISTA: COLABORADORES ══════════════════════════ -->
+      <!-- COLABORADORES -->
       <div id="view-colaboradores" style="display:none">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-          <div style="font-size:13px;color:var(--text2)">Gestiona los miembros del equipo</div>
-          <button class="btn-add" onclick="openModalColaborador()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Agregar colaborador
-          </button>
+        <div class="toolbar">
+          <input type="text" class="search-input" id="colab-search" placeholder="Buscar por nombre o correo…" oninput="renderColaboradores()"/>
+          <select class="filter-select" id="colab-rol" onchange="renderColaboradores()"><option value="">Todos los roles</option><option value="colaborador">Colaborador</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option></select>
+          <select class="filter-select" id="colab-estado" onchange="renderColaboradores()"><option value="">Cualquier estado</option><option value="online">En línea</option><option value="away">Inactivo</option><option value="offline">Desconectado</option></select>
+          <div style="margin-left:auto"><button class="btn-add" onclick="openModalColaborador()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Agregar colaborador</button></div>
         </div>
-        <div class="colab-cards" id="colab-cards">
-          <div class="loader-wrap" style="grid-column:1/-1"><div class="spinner"></div></div>
-        </div>
+        <div class="colab-cards" id="colab-cards"><div class="loader-wrap" style="grid-column:1/-1"><div class="spinner"></div></div></div>
       </div>
 
-      <!-- ══ VISTA: SCREENSHOTS ════════════════════════════ -->
+      <!-- SCREENSHOTS -->
       <div id="view-screenshots" style="display:none">
-        <div class="screenshots-toolbar">
-          <select class="filter-select" id="ss-filter-user" onchange="loadScreenshots()">
-            <option value="">Todos los colaboradores</option>
-          </select>
-          <input type="date" class="filter-select" id="ss-filter-date" onchange="loadScreenshots()"/>
-          <div style="margin-left:auto;font-size:12px;color:var(--text2);font-family:var(--font-mono)" id="ss-count">— capturas</div>
+        <div class="toolbar">
+          <select class="filter-select" id="ss-user" onchange="renderScreenshots()"><option value="">Todos los colaboradores</option></select>
+          <input type="date" class="filter-select" id="ss-fecha" onchange="renderScreenshots()"/>
+          <select class="filter-select" id="ss-app" onchange="renderScreenshots()"><option value="">Todas las apps</option><option>Figma</option><option>Chrome</option><option>VS Code</option><option>Slack</option><option>Notion</option><option>Terminal</option></select>
+          <div style="margin-left:auto;font-size:11px;color:var(--text2);font-family:var(--font-mono)" id="ss-count">—</div>
         </div>
-        <div class="screenshots-grid" id="screenshots-grid">
-          <div class="loader-wrap" style="grid-column:1/-1"><div class="spinner"></div></div>
-        </div>
+        <div class="screenshots-grid" id="screenshots-grid"><div class="loader-wrap" style="grid-column:1/-1"><div class="spinner"></div></div></div>
       </div>
 
-      <!-- ══ VISTA: PRODUCTIVIDAD ══════════════════════════ -->
+      <!-- PRODUCTIVIDAD -->
       <div id="view-productividad" style="display:none">
+        <div class="toolbar">
+          <select class="filter-select" id="prod-user" onchange="renderProductividad()"><option value="">Todo el equipo</option></select>
+          <input type="date" class="filter-select" id="prod-fecha-f" onchange="renderProductividad()"/>
+          <select class="filter-select" id="prod-periodo" onchange="renderProductividad()"><option value="dia">Hoy</option><option value="semana">Esta semana</option><option value="mes">Este mes</option></select>
+        </div>
         <div class="prod-grid">
-          <div class="panel">
-            <div class="panel-header">
-              <div class="panel-title">Horas trabajadas hoy</div>
-              <div class="panel-meta" id="prod-fecha">—</div>
-            </div>
-            <div class="bar-chart-wrap" id="bar-horas"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-header">
-              <div class="panel-title">Aplicaciones más usadas</div>
-              <div class="panel-meta">hoy · equipo completo</div>
-            </div>
-            <div class="bar-chart-wrap" id="bar-apps"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-header">
-              <div class="panel-title">% Actividad vs inactividad</div>
-              <div class="panel-meta">hoy por colaborador</div>
-            </div>
-            <div class="bar-chart-wrap" id="bar-actividad"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-header">
-              <div class="panel-title">Check-in / Check-out</div>
-              <div class="panel-meta">horarios de hoy</div>
-            </div>
-            <div class="bar-chart-wrap" id="bar-checkins"></div>
-          </div>
+          <div class="panel"><div class="panel-header"><div class="panel-title">Horas trabajadas</div><div class="panel-meta" id="prod-fecha-lbl">—</div></div><div class="bar-chart-wrap" id="bar-horas"></div></div>
+          <div class="panel"><div class="panel-header"><div class="panel-title">Apps más usadas</div><div class="panel-meta">equipo completo</div></div><div class="bar-chart-wrap" id="bar-apps"></div></div>
+          <div class="panel"><div class="panel-header"><div class="panel-title">% Actividad vs inactividad</div><div class="panel-meta">por colaborador</div></div><div class="bar-chart-wrap" id="bar-actividad"></div></div>
+          <div class="panel"><div class="panel-header"><div class="panel-title">Check-in / Check-out</div><div class="panel-meta">horarios del día</div></div><div class="bar-chart-wrap" id="bar-checkins"></div></div>
         </div>
       </div>
 
-      <!-- ══ VISTA: PLANILLAS ══════════════════════════════ -->
+      <!-- PLANILLAS -->
       <div id="view-planillas" style="display:none">
-        <div class="planilla-toolbar">
-          <select class="filter-select" id="pl-mes">
-            <option value="2025-04">Abril 2025</option>
-            <option value="2025-03">Marzo 2025</option>
-            <option value="2025-02">Febrero 2025</option>
-          </select>
-          <select class="filter-select" id="pl-user">
-            <option value="">Todos los colaboradores</option>
-          </select>
-          <div style="margin-left:auto;display:flex;gap:8px;">
-            <button class="btn-export" onclick="exportarPlanilla('excel')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              Exportar Excel
-            </button>
-          </div>
+        <div class="toolbar">
+          <select class="filter-select" id="pl-mes" onchange="renderPlanillas()"><option value="2026-04">Abril 2026</option><option value="2026-03">Marzo 2026</option><option value="2026-02">Febrero 2026</option><option value="2025-12">Diciembre 2025</option></select>
+          <select class="filter-select" id="pl-user" onchange="renderPlanillas()"><option value="">Todos los colaboradores</option></select>
+          <select class="filter-select" id="pl-min" onchange="renderPlanillas()"><option value="0">Todas las horas</option><option value="120">Más de 120h</option><option value="160">Más de 160h</option></select>
+          <div style="margin-left:auto"><button class="btn-export" onclick="exportarPlanilla()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Exportar Excel</button></div>
         </div>
-        <div class="planilla-table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Colaborador</th>
-                <th>Días trabajados</th>
-                <th>Horas totales</th>
-                <th>Horas activas</th>
-                <th>% Productividad</th>
-                <th>Primer check-in</th>
-                <th>Último check-out</th>
-              </tr>
-            </thead>
-            <tbody id="planilla-tbody">
-              <tr><td colspan="7"><div class="loader-wrap"><div class="spinner"></div></div></td></tr>
-            </tbody>
-          </table>
-        </div>
+        <div class="planilla-wrap"><table><thead><tr><th>Colaborador</th><th>Días trab.</th><th>Horas totales</th><th>Horas activas</th><th>% Productividad</th><th>Primer check-in</th><th>Último check-out</th></tr></thead><tbody id="planilla-tbody"><tr><td colspan="7"><div class="loader-wrap"><div class="spinner"></div></div></td></tr></tbody></table></div>
       </div>
 
-      <!-- ══ VISTA: CONFIGURACIÓN ══════════════════════════ -->
+      <!-- CONFIGURACIÓN -->
       <div id="view-configuracion" style="display:none">
         <div class="config-grid">
-          <div class="panel">
-            <div class="panel-header"><div class="panel-title">Captura de pantalla</div></div>
+          <div class="panel"><div class="panel-header"><div class="panel-title">Captura de pantalla</div></div>
             <div style="padding:4px 20px 16px">
-              <div class="config-row">
-                <div class="config-row-info">
-                  <div class="config-row-label">Screenshots habilitados</div>
-                  <div class="config-row-desc">Capturar pantalla de cada colaborador</div>
-                </div>
-                <div class="toggle-wrap on" id="toggle-ss" onclick="toggleConfig(this)"><div class="toggle-knob"></div></div>
-              </div>
-              <div class="config-row">
-                <div class="config-row-info">
-                  <div class="config-row-label">Intervalo de captura</div>
-                  <div class="config-row-desc">Minutos entre capturas automáticas</div>
-                </div>
-                <input type="number" class="config-input" id="cfg-intervalo" value="5" min="1" max="60"/>
-              </div>
-              <div class="config-row">
-                <div class="config-row-info">
-                  <div class="config-row-label">Calidad de imagen</div>
-                  <div class="config-row-desc">Alta consume más almacenamiento</div>
-                </div>
-                <select class="filter-select" id="cfg-calidad" style="width:100px">
-                  <option value="media" selected>Media</option>
-                  <option value="alta">Alta</option>
-                  <option value="baja">Baja</option>
-                </select>
-              </div>
-              <div class="config-row">
-                <div class="config-row-info">
-                  <div class="config-row-label">Retención de capturas</div>
-                  <div class="config-row-desc">Días antes de borrar capturas antiguas</div>
-                </div>
-                <input type="number" class="config-input" id="cfg-retencion" value="30" min="7" max="365"/>
-              </div>
+              <div class="config-row"><div class="config-row-info"><div class="config-row-label">Screenshots habilitados</div><div class="config-row-desc">Captura automática de pantalla</div></div><div class="toggle-wrap on" id="toggle-ss" onclick="toggleConfig(this)"><div class="toggle-knob"></div></div></div>
+              <div class="config-row"><div class="config-row-info"><div class="config-row-label">Intervalo de captura</div><div class="config-row-desc">Minutos entre capturas</div></div><input type="number" class="config-input" id="cfg-intervalo" value="5" min="1" max="60"/></div>
+              <div class="config-row"><div class="config-row-info"><div class="config-row-label">Calidad de imagen</div><div class="config-row-desc">Afecta el almacenamiento usado</div></div><select class="filter-select" id="cfg-calidad" style="width:100px"><option value="media" selected>Media</option><option value="alta">Alta</option><option value="baja">Baja</option></select></div>
+              <div class="config-row"><div class="config-row-info"><div class="config-row-label">Retención</div><div class="config-row-desc">Días antes de borrar capturas antiguas</div></div><input type="number" class="config-input" id="cfg-retencion" value="30" min="7" max="365"/></div>
             </div>
           </div>
-
-          <div class="panel">
-            <div class="panel-header"><div class="panel-title">Jornada laboral</div></div>
+          <div class="panel"><div class="panel-header"><div class="panel-title">Jornada laboral</div></div>
             <div style="padding:4px 20px 16px">
-              <div class="config-row">
-                <div class="config-row-info">
-                  <div class="config-row-label">Hora inicio jornada</div>
-                  <div class="config-row-desc">Hora mínima válida para check-in</div>
-                </div>
-                <input type="time" class="config-input" id="cfg-inicio" value="08:00" style="width:100px"/>
-              </div>
-              <div class="config-row">
-                <div class="config-row-info">
-                  <div class="config-row-label">Hora fin jornada</div>
-                  <div class="config-row-desc">Hora límite para check-out automático</div>
-                </div>
-                <input type="time" class="config-input" id="cfg-fin" value="18:00" style="width:100px"/>
-              </div>
-              <div class="config-row">
-                <div class="config-row-info">
-                  <div class="config-row-label">Umbral de inactividad</div>
-                  <div class="config-row-desc">Minutos sin actividad para marcar "ausente"</div>
-                </div>
-                <input type="number" class="config-input" id="cfg-inactividad" value="15" min="5" max="60"/>
-              </div>
-              <div class="config-row">
-                <div class="config-row-info">
-                  <div class="config-row-label">Notificar inactividad</div>
-                  <div class="config-row-desc">Alertar cuando colaborador esté inactivo</div>
-                </div>
-                <div class="toggle-wrap on" id="toggle-notif" onclick="toggleConfig(this)"><div class="toggle-knob"></div></div>
-              </div>
+              <div class="config-row"><div class="config-row-info"><div class="config-row-label">Hora inicio jornada</div><div class="config-row-desc">Hora mínima válida para check-in</div></div><input type="time" class="config-input" id="cfg-inicio" value="08:00" style="width:100px"/></div>
+              <div class="config-row"><div class="config-row-info"><div class="config-row-label">Hora fin jornada</div><div class="config-row-desc">Hora límite para check-out automático</div></div><input type="time" class="config-input" id="cfg-fin" value="18:00" style="width:100px"/></div>
+              <div class="config-row"><div class="config-row-info"><div class="config-row-label">Umbral de inactividad</div><div class="config-row-desc">Minutos de cursor quieto = inactivo</div></div><input type="number" class="config-input" id="cfg-inactividad" value="1" min="1" max="30"/></div>
+              <div class="config-row"><div class="config-row-info"><div class="config-row-label">Notificar inactividad</div><div class="config-row-desc">Alerta cuando colaborador está inactivo</div></div><div class="toggle-wrap on" id="toggle-notif" onclick="toggleConfig(this)"><div class="toggle-knob"></div></div></div>
             </div>
           </div>
-
-          <div class="panel" style="grid-column:1/-1">
-            <div class="panel-header"><div class="panel-title">Proyecto Firebase</div></div>
+          <div class="panel" style="grid-column:1/-1"><div class="panel-header"><div class="panel-title">Información del sistema</div></div>
             <div style="padding:4px 20px 16px">
-              <div class="config-row">
-                <div class="config-row-info">
-                  <div class="config-row-label">Project ID</div>
-                  <div class="config-row-desc" style="font-family:var(--font-mono);color:var(--accent)" id="cfg-project-id">—</div>
-                </div>
-              </div>
-              <div class="config-row">
-                <div class="config-row-info">
-                  <div class="config-row-label">Usuario autenticado</div>
-                  <div class="config-row-desc" style="font-family:var(--font-mono);color:var(--text2)" id="cfg-user-email">—</div>
-                </div>
-              </div>
-              <div class="config-row">
-                <div class="config-row-info">
-                  <div class="config-row-label">Versión del sistema</div>
-                  <div class="config-row-desc" style="font-family:var(--font-mono);color:var(--text2)">WorkForce Monitor v1.0.0</div>
-                </div>
-              </div>
+              <div class="config-row"><div class="config-row-info"><div class="config-row-label">Project ID</div><div class="config-row-desc" style="font-family:var(--font-mono);color:var(--accent)" id="cfg-project-id">—</div></div></div>
+              <div class="config-row"><div class="config-row-info"><div class="config-row-label">Usuario autenticado</div><div class="config-row-desc" style="font-family:var(--font-mono);color:var(--text2)" id="cfg-user-email">—</div></div></div>
+              <div class="config-row"><div class="config-row-info"><div class="config-row-label">Versión</div><div class="config-row-desc" style="font-family:var(--font-mono)">WorkForce Monitor v1.1.0</div></div></div>
             </div>
           </div>
         </div>
         <button class="btn-save" onclick="guardarConfiguracion()">Guardar configuración</button>
       </div>
 
-    </div><!-- /content -->
-  </div><!-- /main -->
-</div><!-- /app -->
-
-<!-- MODAL: Agregar colaborador -->
-<div class="modal-overlay" id="modal-colab">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-colab')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    <div class="modal-title">Agregar colaborador</div>
-    <div class="form-group">
-      <label class="form-label">Nombre completo</label>
-      <input type="text" id="new-nombre" class="form-input" placeholder="Ej: Carlos Martínez"/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Correo electrónico</label>
-      <input type="email" id="new-email" class="form-input" placeholder="carlos@pixelgraphic.co"/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Contraseña temporal</label>
-      <input type="text" id="new-pass" class="form-input" placeholder="Mínimo 6 caracteres"/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Rol</label>
-      <select id="new-rol" class="form-input">
-        <option value="colaborador">Colaborador</option>
-        <option value="supervisor">Supervisor</option>
-        <option value="admin">Administrador</option>
-      </select>
-    </div>
-    <div id="modal-error" class="login-error" style="margin-top:0;margin-bottom:12px"></div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('modal-colab')">Cancelar</button>
-      <button class="btn-primary" style="width:auto;padding:9px 24px" onclick="crearColaborador()">Crear colaborador</button>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
+<!-- DRAWER -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer-colab">
+  <div class="drawer-header">
+    <div class="drawer-avatar" id="dr-avatar">AG</div>
+    <div style="flex:1">
+      <div class="drawer-name" id="dr-name">—</div>
+      <div class="drawer-email" id="dr-email">—</div>
+    </div>
+    <div class="status-pill" id="dr-pill" style="margin-right:8px">—</div>
+    <div class="drawer-close" onclick="closeDrawer()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">
+      <div class="drawer-section-title">Resumen del día</div>
+      <div class="drawer-kpis">
+        <div class="drawer-kpi"><div class="drawer-kpi-val" id="dr-horas" style="color:var(--accent)">—</div><div class="drawer-kpi-label">horas trabajadas</div></div>
+        <div class="drawer-kpi"><div class="drawer-kpi-val" id="dr-pct" style="color:var(--green)">—</div><div class="drawer-kpi-label">% actividad</div></div>
+        <div class="drawer-kpi"><div class="drawer-kpi-val" id="dr-inact" style="color:var(--amber)">—</div><div class="drawer-kpi-label">min inactivo</div></div>
+      </div>
+      <div class="dr-meta-grid">
+        <div class="dr-meta-item"><div class="dr-meta-label">CHECK-IN</div><div class="dr-meta-val" id="dr-ci" style="color:var(--green)">—</div></div>
+        <div class="dr-meta-item"><div class="dr-meta-label">CHECK-OUT</div><div class="dr-meta-val" id="dr-co" style="color:var(--text2)">—</div></div>
+        <div class="dr-meta-item"><div class="dr-meta-label">APP ACTIVA</div><div class="dr-meta-val" id="dr-app" style="color:var(--text)">—</div></div>
+        <div class="dr-meta-item"><div class="dr-meta-label">ROL</div><div class="dr-meta-val" id="dr-rol" style="color:var(--text2)">—</div></div>
+      </div>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-title">Línea de tiempo — actividad vs inactividad</div>
+      <div class="timeline-hours" id="dr-tl-hours"></div>
+      <div class="timeline-bar" id="dr-tl-bar"></div>
+      <div class="timeline-legend">
+        <div class="tl-legend-item"><div class="tl-legend-dot" style="background:var(--green)"></div>Activo</div>
+        <div class="tl-legend-item"><div class="tl-legend-dot" style="background:var(--red);opacity:0.75"></div>Inactivo (&gt;1 min)</div>
+        <div class="tl-legend-item"><div class="tl-legend-dot" style="background:var(--bg4)"></div>Sin datos</div>
+      </div>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-title">Aplicaciones — tiempo de uso hoy</div>
+      <div id="dr-apps"></div>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-title">Períodos de inactividad detectados hoy</div>
+      <div id="dr-inacts"></div>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-title">Última captura de pantalla</div>
+      <div style="background:var(--bg3);border-radius:10px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--text3);">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span style="font-size:11px;font-family:var(--font-mono)" id="dr-ss-label">Disponible cuando el agente esté activo</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL COLABORADOR -->
+<div class="modal-overlay" id="modal-colab">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-colab')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <div class="modal-title">Agregar colaborador</div>
+    <div class="form-group"><label class="form-label">Nombre completo</label><input type="text" id="new-nombre" class="form-input" placeholder="Ej: Carlos Martínez"/></div>
+    <div class="form-group"><label class="form-label">Correo electrónico</label><input type="email" id="new-email" class="form-input" placeholder="carlos@pixelgraphic.co"/></div>
+    <div class="form-group"><label class="form-label">Contraseña temporal</label><input type="text" id="new-pass" class="form-input" placeholder="Mínimo 6 caracteres"/></div>
+    <div class="form-group"><label class="form-label">Rol</label><select id="new-rol" class="form-input"><option value="colaborador">Colaborador</option><option value="supervisor">Supervisor</option><option value="admin">Administrador</option></select></div>
+    <div id="modal-error" class="login-error" style="margin-top:0;margin-bottom:12px"></div>
+    <div class="modal-actions"><button class="btn-cancel" onclick="closeModal('modal-colab')">Cancelar</button><button class="btn-primary" style="width:auto;padding:9px 24px" onclick="crearColaborador()">Crear colaborador</button></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"><div class="toast-dot"></div><span id="toast-msg"></span></div>
 
-<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, where, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-// ══ CONFIGURACIÓN FIREBASE ══════════════════════════════
 const firebaseConfig = {
-  apiKey:            "AIzaSyCUY99wqKMG7YOUy9Z5bGMfa_3z47Rt0mc",
-  authDomain:        "workforce-monitor-pixel.firebaseapp.com",
-  projectId:         "workforce-monitor-pixel",
-  storageBucket:     "workforce-monitor-pixel.firebasestorage.app",
-  messagingSenderId: "107288241904",
-  appId:             "1:107288241904:web:09d2325b5f5ad4b3fb8435"
+  apiKey:"AIzaSyCUY99wqKMG7YOUy9Z5bGMfa_3z47Rt0mc",
+  authDomain:"workforce-monitor-pixel.firebaseapp.com",
+  projectId:"workforce-monitor-pixel",
+  storageBucket:"workforce-monitor-pixel.firebasestorage.app",
+  messagingSenderId:"107288241904",
+  appId:"1:107288241904:web:09d2325b5f5ad4b3fb8435"
 };
-
-const app  = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db   = getFirestore(app);
-
-// ── Exponer a window para uso desde JS inline ────────────
-window._fb = { auth, db, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, where, orderBy, limit, serverTimestamp, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword };
-
-// ── Auth state ───────────────────────────────────────────
-onAuthStateChanged(auth, user => {
-  if (user) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    const initials = (user.displayName || user.email || 'AD').split(/[\s@]/)[0].slice(0,2).toUpperCase();
-    document.getElementById('sidebar-avatar').textContent = initials;
-    document.getElementById('sidebar-name').textContent = user.displayName || user.email.split('@')[0];
-    document.getElementById('cfg-user-email').textContent = user.email;
-    document.getElementById('cfg-project-id').textContent = firebaseConfig.projectId;
-    window._currentUser = user;
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+window._fb={auth,db,collection,doc,getDoc,getDocs,setDoc,addDoc,updateDoc,deleteDoc,onSnapshot,query,where,orderBy,limit,serverTimestamp,signInWithEmailAndPassword,signOut,createUserWithEmailAndPassword};
+onAuthStateChanged(auth,user=>{
+  if(user){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    const ini=(user.displayName||user.email||'AD').split(/[\s@]/)[0].slice(0,2).toUpperCase();
+    document.getElementById('sidebar-avatar').textContent=ini;
+    document.getElementById('sidebar-name').textContent=user.displayName||user.email.split('@')[0];
+    document.getElementById('cfg-user-email').textContent=user.email;
+    document.getElementById('cfg-project-id').textContent=firebaseConfig.projectId;
+    window._currentUser=user;
     initApp();
-  } else {
-    document.getElementById('login-screen').style.display = 'flex';
-    document.getElementById('app').style.display = 'none';
+  }else{
+    document.getElementById('login-screen').style.display='flex';
+    document.getElementById('app').style.display='none';
   }
 });
 </script>
 
 <script>
-// ══ DATOS DEMO (se usan si Firebase no tiene datos aún) ══
-const DEMO_COLABORADORES = [
-  { id:'u1', nombre:'Ana García',     email:'ana@pixel.co',      rol:'colaborador', activo:true,  color:'av-blue',   status:'online',  checkin:'08:14', worked:'6h 23m', app:'Figma' },
-  { id:'u2', nombre:'Luis Ramírez',   email:'luis@pixel.co',     rol:'colaborador', activo:true,  color:'av-green',  status:'online',  checkin:'08:02', worked:'6h 35m', app:'Chrome' },
-  { id:'u3', nombre:'Carla Medina',   email:'carla@pixel.co',    rol:'supervisor',  activo:true,  color:'av-amber',  status:'away',    checkin:'09:30', worked:'5h 07m', app:'Slack' },
-  { id:'u4', nombre:'Diego Torres',   email:'diego@pixel.co',    rol:'colaborador', activo:true,  color:'av-purple', status:'online',  checkin:'08:45', worked:'5h 52m', app:'VS Code' },
-  { id:'u5', nombre:'María López',    email:'maria@pixel.co',    rol:'colaborador', activo:false, color:'av-coral',  status:'offline', checkin:'—',     worked:'—',      app:'—' },
-  { id:'u6', nombre:'Andrés Castro',  email:'andres@pixel.co',   rol:'colaborador', activo:false, color:'av-teal',   status:'offline', checkin:'—',     worked:'—',      app:'—' },
+const AV=['av-blue','av-green','av-amber','av-purple','av-coral','av-teal'];
+const DC=[
+  {id:'u1',nombre:'Ana García',   email:'ana@pixel.co',  rol:'colaborador',color:'av-blue',  status:'online', checkin:'08:14',co:null,  worked:'6h 23m',wm:383,pct:78,inm:18,app:'Figma'},
+  {id:'u2',nombre:'Luis Ramírez', email:'luis@pixel.co', rol:'colaborador',color:'av-green', status:'online', checkin:'08:02',co:null,  worked:'6h 35m',wm:395,pct:82,inm:11,app:'Chrome'},
+  {id:'u3',nombre:'Carla Medina', email:'carla@pixel.co',rol:'supervisor', color:'av-amber', status:'away',   checkin:'09:30',co:null,  worked:'5h 07m',wm:307,pct:59,inm:37,app:'Slack'},
+  {id:'u4',nombre:'Diego Torres', email:'diego@pixel.co',rol:'colaborador',color:'av-purple',status:'online', checkin:'08:45',co:null,  worked:'5h 52m',wm:352,pct:84,inm:9, app:'VS Code'},
+  {id:'u5',nombre:'María López',  email:'maria@pixel.co',rol:'colaborador',color:'av-coral', status:'offline',checkin:'—',   co:'—',   worked:'—',     wm:0,  pct:0, inm:0, app:'—'},
+  {id:'u6',nombre:'Andrés Castro',email:'and@pixel.co',  rol:'colaborador',color:'av-teal',  status:'offline',checkin:'—',   co:'—',   worked:'—',     wm:0,  pct:0, inm:0, app:'—'},
 ];
-
-const DEMO_ACTIVIDAD = [
-  { tipo:'in',    nombre:'Diego Torres',  desc:'Check-in desde MacBook Pro',          time:'hace 12 min' },
-  { tipo:'in',    nombre:'Ana García',    desc:'Check-in · App activa: Figma',        time:'hace 28 min' },
-  { tipo:'alert', nombre:'Carla Medina',  desc:'Inactividad detectada: 18 min',       time:'hace 35 min' },
-  { tipo:'in',    nombre:'Luis Ramírez',  desc:'Check-in desde MacBook Air',          time:'hace 1h 02m' },
-  { tipo:'out',   nombre:'María López',   desc:'Check-out · Jornada: 7h 45m',        time:'hace 2h 10m' },
-  { tipo:'alert', nombre:'Andrés Castro', desc:'Sin check-in hoy',                    time:'hace 3h' },
+const DAPPS={u1:[{a:'Figma',m:187},{a:'Chrome',m:94},{a:'Slack',m:62},{a:'Notion',m:40}],u2:[{a:'Chrome',m:210},{a:'Figma',m:88},{a:'Zoom',m:55},{a:'Terminal',m:42}],u3:[{a:'Slack',m:145},{a:'Chrome',m:89},{a:'Notion',m:73}],u4:[{a:'VS Code',m:220},{a:'Terminal',m:78},{a:'Chrome',m:54}],u5:[],u6:[]};
+const DINACT={u1:[{i:'10:22',f:'10:38',m:16},{i:'13:05',f:'13:07',m:2}],u2:[{i:'11:40',f:'11:51',m:11}],u3:[{i:'10:15',f:'10:31',m:16},{i:'11:55',f:'12:13',m:18},{i:'14:20',f:'14:23',m:3}],u4:[{i:'12:00',f:'12:09',m:9}],u5:[],u6:[]};
+const DACT=[
+  {t:'in',   n:'Diego Torres', d:'Check-in · MacBook Pro',            h:'hace 12 min'},
+  {t:'in',   n:'Ana García',   d:'Check-in · App activa: Figma',      h:'hace 28 min'},
+  {t:'alert',n:'Carla Medina', d:'Inactividad detectada · 18 min',    h:'hace 35 min'},
+  {t:'in',   n:'Luis Ramírez', d:'Check-in · MacBook Air',            h:'hace 1h 02m'},
+  {t:'out',  n:'María López',  d:'Check-out · Jornada: 7h 45m',      h:'hace 2h 10m'},
+  {t:'alert',n:'Andrés Castro',d:'Sin check-in hoy',                  h:'hace 3h'},
 ];
+let filtroE='';
 
-const DEMO_APPS = [
-  { app:'Figma',    minutos:287 },
-  { app:'Chrome',   minutos:234 },
-  { app:'VS Code',  minutos:198 },
-  { app:'Slack',    minutos:112 },
-  { app:'Notion',   minutos:87  },
-  { app:'Terminal', minutos:54  },
-];
-
-const AVATAR_COLORS = ['av-blue','av-green','av-amber','av-purple','av-coral','av-teal'];
-
-// ══ APP INIT ════════════════════════════════════════════
-function initApp() {
-  setCurrentDate();
-  showView('tablero', document.querySelector('.nav-item.active'));
+function initApp(){
+  const now=new Date();
+  document.getElementById('ss-fecha').value=now.toISOString().split('T')[0];
+  document.getElementById('prod-fecha-f').value=now.toISOString().split('T')[0];
+  document.getElementById('prod-fecha-lbl').textContent=now.toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'numeric'});
+  const opts=DC.map(c=>`<option value="${c.id}">${c.nombre}</option>`).join('');
+  ['ss-user','prod-user','pl-user'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML='<option value="">Todos los colaboradores</option>'+opts;
+  });
+  showView('tablero',document.querySelector('.nav-item.active'));
 }
 
-function setCurrentDate() {
-  const now = new Date();
-  document.getElementById('current-date').textContent =
-    now.toLocaleDateString('es-CO', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-  document.getElementById('hora-actualizacion').textContent =
-    'actualizado ' + now.toLocaleTimeString('es-CO', { hour:'2-digit', minute:'2-digit' });
-  document.getElementById('ss-filter-date').value = now.toISOString().split('T')[0];
-  document.getElementById('prod-fecha').textContent =
-    now.toLocaleDateString('es-CO', { day:'2-digit', month:'short', year:'numeric' });
-}
-
-// ══ NAVEGACIÓN ══════════════════════════════════════════
-window.showView = function(view, el) {
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if(el) el.classList.add('active');
-  const views = ['tablero','colaboradores','screenshots','productividad','planillas','configuracion'];
-  views.forEach(v => document.getElementById('view-'+v).style.display = v===view ? 'block' : 'none');
-  const titles = {
-    tablero:        ['Tablero en vivo',        'Monitoreo en tiempo real'],
-    colaboradores:  ['Colaboradores',           'Gestión del equipo'],
-    screenshots:    ['Capturas de pantalla',    'Historial visual de actividad'],
-    productividad:  ['Productividad',           'Métricas de desempeño'],
-    planillas:      ['Planillas de horas',      'Registro de tiempos por colaborador'],
-    configuracion:  ['Configuración',           'Ajustes del sistema'],
-  };
-  document.getElementById('page-title').textContent = titles[view][0];
-  const now = new Date();
-  document.getElementById('page-sub').innerHTML = titles[view][1] + ' · <span id="current-date">' +
-    now.toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) + '</span>';
-
-  if(view==='tablero')       renderTablero();
-  if(view==='colaboradores') renderColaboradores();
-  if(view==='screenshots')   loadScreenshots();
-  if(view==='productividad') renderProductividad();
-  if(view==='planillas')     renderPlanillas();
+window.showView=function(v,el){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el)el.classList.add('active');
+  ['tablero','colaboradores','screenshots','productividad','planillas','configuracion'].forEach(x=>{ document.getElementById('view-'+x).style.display=x===v?'block':'none'; });
+  const T={tablero:['Tablero en vivo','Monitoreo en tiempo real'],colaboradores:['Colaboradores','Gestión del equipo'],screenshots:['Capturas de pantalla','Historial visual de actividad'],productividad:['Productividad','Métricas de desempeño'],planillas:['Planillas de horas','Registro de tiempos'],configuracion:['Configuración','Ajustes del sistema']};
+  const now=new Date();
+  document.getElementById('page-title').textContent=T[v][0];
+  document.getElementById('page-sub').textContent=T[v][1]+' · '+now.toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  if(v==='tablero')renderTablero();
+  if(v==='colaboradores')renderColaboradores();
+  if(v==='screenshots')renderScreenshots();
+  if(v==='productividad')renderProductividad();
+  if(v==='planillas')renderPlanillas();
 };
 
-// ══ TABLERO ═════════════════════════════════════════════
-function renderTablero() {
-  const activos  = DEMO_COLABORADORES.filter(c => c.status === 'online').length;
-  const away     = DEMO_COLABORADORES.filter(c => c.status === 'away').length;
-  const offline  = DEMO_COLABORADORES.filter(c => c.status === 'offline').length;
-  document.getElementById('kpi-activos').textContent   = activos;
-  document.getElementById('kpi-total').textContent     = DEMO_COLABORADORES.length;
-  document.getElementById('kpi-ausentes').textContent  = offline;
-  document.getElementById('kpi-inactivos').textContent = away;
-
-  // Lista colaboradores
-  const list = document.getElementById('colab-list');
-  list.innerHTML = DEMO_COLABORADORES.map(c => `
-    <div class="colab-row">
-      <div class="colab-avatar ${c.color}">
-        ${initials(c.nombre)}
-        <div class="status-dot ${c.status}"></div>
-      </div>
-      <div class="colab-info">
-        <div class="colab-name">${c.nombre}</div>
-        <div class="colab-app">${c.status !== 'offline' ? c.app : 'Sin conexión'}</div>
-      </div>
-      <div class="colab-time">
-        ${c.status !== 'offline' ? `<span class="checkin">↑ ${c.checkin}</span><span class="worked">${c.worked}</span>` : '<span style="color:var(--text3);font-size:12px">—</span>'}
-      </div>
-      <div class="status-pill ${c.status}">${statusLabel(c.status)}</div>
-    </div>`).join('');
-
-  // Actividad
-  const feed = document.getElementById('activity-feed');
-  feed.innerHTML = DEMO_ACTIVIDAD.map(a => `
-    <div class="activity-item">
-      <div class="activity-dot ${a.tipo}"></div>
-      <div class="activity-text">
-        <div class="activity-name">${a.nombre}</div>
-        <div class="activity-desc">${a.desc}</div>
-        <div class="activity-time">${a.time}</div>
-      </div>
-    </div>`).join('');
-
-  setCurrentDate();
+function renderTablero(){
+  document.getElementById('kpi-activos').textContent=DC.filter(c=>c.status==='online').length;
+  document.getElementById('kpi-total').textContent=DC.length;
+  document.getElementById('kpi-ausentes').textContent=DC.filter(c=>c.status==='offline').length;
+  document.getElementById('kpi-inactivos').textContent=DC.filter(c=>c.status==='away').length;
+  renderLista();
+  document.getElementById('activity-feed').innerHTML=DACT.map(a=>`<div class="activity-item"><div class="activity-dot ${a.t}"></div><div class="activity-text"><div class="activity-name">${a.n}</div><div class="activity-desc">${a.d}</div><div class="activity-time">${a.h}</div></div></div>`).join('');
+  document.getElementById('hora-act').textContent='Actualizado '+new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
 }
 
-// ══ COLABORADORES ════════════════════════════════════════
-function renderColaboradores() {
-  const cards = document.getElementById('colab-cards');
-  cards.innerHTML = DEMO_COLABORADORES.map((c,i) => `
-    <div class="colab-card">
-      <div class="colab-card-top">
-        <div class="colab-card-avatar ${AVATAR_COLORS[i % AVATAR_COLORS.length]}" style="border-radius:12px">
-          ${initials(c.nombre)}
-        </div>
-        <div>
-          <div class="colab-card-name">${c.nombre}</div>
-          <div class="colab-card-email">${c.email}</div>
-        </div>
-        <div style="margin-left:auto"><div class="status-pill ${c.status}">${statusLabel(c.status)}</div></div>
-      </div>
+window.renderLista=function(){
+  const s=(document.getElementById('tablero-search')?.value||'').toLowerCase();
+  const lista=DC.filter(c=>(!filtroE||c.status===filtroE)&&(!s||c.nombre.toLowerCase().includes(s)||c.email.includes(s)));
+  document.getElementById('conteo-vis').textContent=lista.length+' colaboradores';
+  document.getElementById('colab-list').innerHTML=lista.length===0
+    ?'<div class="empty-state"><p>Sin resultados para ese filtro</p></div>'
+    :lista.map(c=>`<div class="colab-row" onclick="openDrawer('${c.id}')">
+      <div class="colab-avatar ${c.color}">${INI(c.nombre)}<div class="status-dot ${c.status}"></div></div>
+      <div class="colab-info"><div class="colab-name">${c.nombre}</div><div class="colab-app">${c.status!=='offline'?c.app:'Sin conexión'}</div></div>
+      <div class="colab-time">${c.status!=='offline'?`<span class="checkin">↑ ${c.checkin}</span><span class="worked">${c.worked}</span>`:'<span style="color:var(--text3)">—</span>'}</div>
+      <div class="status-pill ${c.status}">${SL(c.status)}</div>
+    </div>`).join('');
+};
+
+window.setFE=function(e,btn){
+  filtroE=e;
+  document.querySelectorAll('#view-tablero .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLista();
+};
+window.filtrarTablero=function(e){
+  filtroE=e;
+  const m={'':'fbtn-all','online':'fbtn-online','away':'fbtn-away','offline':'fbtn-offline'};
+  document.querySelectorAll('#view-tablero .filter-btn').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById(m[e]);if(el)el.classList.add('active');
+  renderLista();
+};
+
+// DRAWER
+window.openDrawer=function(uid){
+  const c=DC.find(x=>x.id===uid);if(!c)return;
+  document.getElementById('dr-avatar').className='drawer-avatar '+c.color;
+  document.getElementById('dr-avatar').textContent=INI(c.nombre);
+  document.getElementById('dr-name').textContent=c.nombre;
+  document.getElementById('dr-email').textContent=c.email;
+  const pill=document.getElementById('dr-pill');pill.className='status-pill '+c.status;pill.textContent=SL(c.status);
+  const h=Math.floor(c.wm/60),m=c.wm%60;
+  document.getElementById('dr-horas').textContent=c.wm>0?`${h}h ${m}m`:'—';
+  document.getElementById('dr-pct').textContent=c.pct>0?c.pct+'%':'—';
+  document.getElementById('dr-inact').textContent=c.inm+'m';
+  document.getElementById('dr-ci').textContent=c.checkin;
+  document.getElementById('dr-co').textContent=c.co||'Activo';
+  document.getElementById('dr-app').textContent=c.app;
+  document.getElementById('dr-rol').textContent=c.rol;
+  buildTimeline(c);
+  const apps=DAPPS[uid]||[];
+  const mx=apps.length>0?Math.max(...apps.map(a=>a.m)):1;
+  document.getElementById('dr-apps').innerHTML=apps.length===0
+    ?'<div style="font-size:12px;color:var(--text3);font-family:var(--font-mono)">Sin datos de aplicaciones hoy</div>'
+    :apps.map(a=>`<div class="app-row"><div class="app-name">${a.a}</div><div class="app-track"><div class="app-fill" style="width:${(a.m/mx*100).toFixed(1)}%"></div></div><div class="app-time">${a.m}m</div></div>`).join('');
+  const inacts=DINACT[uid]||[];
+  document.getElementById('dr-inacts').innerHTML=inacts.length===0
+    ?'<div style="font-size:12px;color:var(--text3);font-family:var(--font-mono)">Sin períodos de inactividad hoy</div>'
+    :`<table class="inact-tbl"><thead><tr><th>Inicio</th><th>Fin</th><th>Duración</th><th></th></tr></thead><tbody>${inacts.map(i=>`<tr><td>${i.i}</td><td>${i.f}</td><td>${i.m} min</td><td><span class="inact-badge">${i.m>=15?'prolongada':'breve'}</span></td></tr>`).join('')}</tbody></table>`;
+  document.getElementById('dr-ss-label').textContent=c.status!=='offline'?'Disponible cuando el agente esté activo':'Colaborador sin sesión activa';
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('drawer-colab').classList.add('open');
+};
+
+function buildTimeline(c){
+  const SH=8,TM=600;
+  if(c.wm===0){
+    document.getElementById('dr-tl-bar').innerHTML=`<div class="tl-seg empty" style="width:100%"></div>`;
+    document.getElementById('dr-tl-hours').innerHTML='';return;
+  }
+  const ciM=t2m(c.checkin)-SH*60;
+  const endM=ciM+c.wm;
+  const inacts=DINACT[c.id]||[];
+  let segs=[],cur=ciM;
+  inacts.forEach(i=>{
+    const iS=t2m(i.i)-SH*60,iE=t2m(i.f)-SH*60;
+    if(iS>cur)segs.push({t:'active',s:cur,e:iS});
+    segs.push({t:'inactive',s:iS,e:iE});
+    cur=iE;
+  });
+  if(cur<endM)segs.push({t:'active',s:cur,e:endM});
+  let html='';
+  if(ciM>0)html+=`<div class="tl-seg empty" style="width:${(ciM/TM*100).toFixed(2)}%"></div>`;
+  segs.forEach(sg=>{const w=((sg.e-sg.s)/TM*100).toFixed(2);html+=`<div class="tl-seg ${sg.t}" style="width:${w}%" title="${sg.t==='active'?'Activo':'Inactivo'} ${m2t(SH*60+sg.s)}–${m2t(SH*60+sg.e)}"></div>`;});
+  const after=TM-endM;
+  if(after>0)html+=`<div class="tl-seg empty" style="width:${(after/TM*100).toFixed(2)}%"></div>`;
+  document.getElementById('dr-tl-bar').innerHTML=html;
+  document.getElementById('dr-tl-hours').innerHTML=[8,9,10,11,12,13,14,15,16,17,18].map(h=>`<span>${h}h</span>`).join('');
+}
+function t2m(t){if(!t||t==='—')return 0;const[h,m]=t.split(':').map(Number);return h*60+(m||0);}
+function m2t(m){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
+
+window.closeDrawer=function(){
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.getElementById('drawer-colab').classList.remove('open');
+};
+
+window.renderColaboradores=function(){
+  const s=(document.getElementById('colab-search')?.value||'').toLowerCase();
+  const r=document.getElementById('colab-rol')?.value||'';
+  const e=document.getElementById('colab-estado')?.value||'';
+  const lista=DC.filter(c=>(!s||c.nombre.toLowerCase().includes(s)||c.email.includes(s))&&(!r||c.rol===r)&&(!e||c.status===e));
+  document.getElementById('colab-cards').innerHTML=lista.length===0
+    ?'<div class="empty-state" style="grid-column:1/-1"><p>Sin resultados para ese filtro</p></div>'
+    :lista.map((c,i)=>`<div class="colab-card" onclick="openDrawer('${c.id}')">
+      <div class="colab-card-top"><div class="colab-card-avatar ${AV[i%AV.length]}">${INI(c.nombre)}</div><div><div class="colab-card-name">${c.nombre}</div><div class="colab-card-email">${c.email}</div></div><div style="margin-left:auto"><div class="status-pill ${c.status}">${SL(c.status)}</div></div></div>
       <div class="colab-card-stats">
-        <div class="stat-mini">
-          <div class="stat-mini-label">Hoy</div>
-          <div class="stat-mini-value" style="color:var(--accent)">${c.worked || '—'}</div>
-        </div>
-        <div class="stat-mini">
-          <div class="stat-mini-label">Rol</div>
-          <div class="stat-mini-value">${c.rol}</div>
-        </div>
-        <div class="stat-mini">
-          <div class="stat-mini-label">Check-in</div>
-          <div class="stat-mini-value" style="color:var(--green)">${c.checkin || '—'}</div>
-        </div>
-        <div class="stat-mini">
-          <div class="stat-mini-label">App activa</div>
-          <div class="stat-mini-value">${c.app || '—'}</div>
-        </div>
+        <div class="stat-mini"><div class="stat-mini-label">Horas hoy</div><div class="stat-mini-value" style="color:var(--accent)">${c.worked||'—'}</div></div>
+        <div class="stat-mini"><div class="stat-mini-label">% Actividad</div><div class="stat-mini-value" style="color:var(--green)">${c.pct>0?c.pct+'%':'—'}</div></div>
+        <div class="stat-mini"><div class="stat-mini-label">Inactividad</div><div class="stat-mini-value" style="color:var(--amber)">${c.inm>0?c.inm+'m':'—'}</div></div>
+        <div class="stat-mini"><div class="stat-mini-label">Rol</div><div class="stat-mini-value">${c.rol}</div></div>
       </div>
       <div class="colab-card-actions">
-        <div class="btn-sm">Ver detalle</div>
-        <div class="btn-sm danger">Desactivar</div>
-      </div>
-    </div>`).join('');
-}
-
-// ══ SCREENSHOTS ══════════════════════════════════════════
-window.loadScreenshots = function() {
-  const grid = document.getElementById('screenshots-grid');
-  const DEMO_SS = Array.from({length:12}, (_,i) => ({
-    id:`ss${i}`,
-    nombre: DEMO_COLABORADORES[i % DEMO_COLABORADORES.length].nombre,
-    color:  DEMO_COLABORADORES[i % DEMO_COLABORADORES.length].color,
-    app: ['Figma','Chrome','VS Code','Slack','Notion'][i%5],
-    hora: `${String(8 + Math.floor(i*30/60)).padStart(2,'0')}:${String((i*30)%60).padStart(2,'0')}`,
-  }));
-  document.getElementById('ss-count').textContent = `${DEMO_SS.length} capturas`;
-  grid.innerHTML = DEMO_SS.map(s => `
-    <div class="screenshot-card" onclick="toast('Vista de captura próximamente disponible','success')">
-      <div class="screenshot-thumb">
-        <div class="screenshot-thumb-placeholder">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-          <span>Captura · ${s.hora}</span>
-        </div>
-      </div>
-      <div class="screenshot-info">
-        <div class="screenshot-user">${s.nombre}</div>
-        <div class="screenshot-app">${s.app}</div>
-        <div class="screenshot-time">${document.getElementById('ss-filter-date').value} · ${s.hora}</div>
+        <div class="btn-sm" onclick="event.stopPropagation();openDrawer('${c.id}')">Ver detalle</div>
+        <div class="btn-sm danger" onclick="event.stopPropagation();toast('Disponible en próxima versión','error')">Desactivar</div>
       </div>
     </div>`).join('');
 };
 
-// ══ PRODUCTIVIDAD ════════════════════════════════════════
-function renderProductividad() {
-  // Horas trabajadas
-  renderBar('bar-horas', DEMO_COLABORADORES.filter(c=>c.worked!=='—').map(c=>({
-    label: c.nombre.split(' ')[0],
-    val: parseFloat(c.worked) || 6,
-    max: 9,
-    color: 'var(--accent)',
-    display: c.worked
-  })));
-
-  // Apps más usadas
-  const maxApp = Math.max(...DEMO_APPS.map(a=>a.minutos));
-  renderBar('bar-apps', DEMO_APPS.map(a=>({
-    label: a.app,
-    val: a.minutos,
-    max: maxApp,
-    color: 'var(--green)',
-    display: `${a.minutos}m`
-  })));
-
-  // Actividad vs inactividad
-  renderBar('bar-actividad', DEMO_COLABORADORES.filter(c=>c.status!=='offline').map((c,i) => ({
-    label: c.nombre.split(' ')[0],
-    val: 75 - i*8,
-    max: 100,
-    color: (75-i*8) > 60 ? 'var(--green)' : 'var(--amber)',
-    display: `${75-i*8}%`
-  })));
-
-  // Check-ins
-  document.getElementById('bar-checkins').innerHTML =
-    DEMO_COLABORADORES.map(c=>`
-      <div class="bar-row">
-        <div class="bar-label">${c.nombre.split(' ')[0]}</div>
-        <div style="flex:1;display:flex;align-items:center;gap:8px">
-          ${c.status!=='offline'
-            ? `<span style="font-family:var(--font-mono);font-size:11px;color:var(--green)">↑ ${c.checkin}</span>
-               <span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">→</span>
-               <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2)">activo</span>`
-            : `<span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">Sin registro hoy</span>`}
-        </div>
-      </div>`).join('');
-}
-
-function renderBar(containerId, items) {
-  document.getElementById(containerId).innerHTML = items.map(item=>`
-    <div class="bar-row">
-      <div class="bar-label">${item.label}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${(item.val/item.max*100).toFixed(1)}%;background:${item.color}"></div></div>
-      <div class="bar-val">${item.display}</div>
+window.renderScreenshots=function(){
+  const u=document.getElementById('ss-user')?.value||'';
+  const a=document.getElementById('ss-app')?.value||'';
+  const f=document.getElementById('ss-fecha')?.value||'';
+  let lista=Array.from({length:18},(_,i)=>({id:`ss${i}`,uid:DC[i%DC.length].id,nombre:DC[i%DC.length].nombre,color:DC[i%DC.length].color,app:['Figma','Chrome','VS Code','Slack','Notion'][i%5],hora:`${String(8+Math.floor(i*33/60)).padStart(2,'0')}:${String((i*33)%60).padStart(2,'0')}`}));
+  if(u)lista=lista.filter(s=>s.uid===u);
+  if(a)lista=lista.filter(s=>s.app===a);
+  document.getElementById('ss-count').textContent=lista.length+' capturas';
+  document.getElementById('screenshots-grid').innerHTML=lista.length===0
+    ?'<div class="empty-state" style="grid-column:1/-1"><p>Sin capturas con ese filtro</p></div>'
+    :lista.map(s=>`<div class="screenshot-card" onclick="toast('Vista disponible cuando el agente esté activo','success')">
+      <div class="screenshot-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+      <div class="screenshot-info"><div class="screenshot-user">${s.nombre}</div><div class="screenshot-app">${s.app}</div><div class="screenshot-time">${f} · ${s.hora}</div></div>
     </div>`).join('');
+};
+
+window.renderProductividad=function(){
+  const u=document.getElementById('prod-user')?.value||'';
+  let lista=u?DC.filter(c=>c.id===u):DC;
+  const activos=lista.filter(c=>c.wm>0);
+  const mx=Math.max(...activos.map(c=>c.wm),1);
+  renderBar('bar-horas',activos.map(c=>({l:c.nombre.split(' ')[0],v:c.wm,mx,col:'var(--accent)',d:c.worked})));
+  const am={};lista.forEach(c=>{(DAPPS[c.id]||[]).forEach(a=>{am[a.a]=(am[a.a]||0)+a.m;});});
+  const aa=Object.entries(am).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const mxa=aa.length>0?aa[0][1]:1;
+  renderBar('bar-apps',aa.map(([a,m])=>({l:a,v:m,mx:mxa,col:'var(--green)',d:m+'m'})));
+  renderBar('bar-actividad',activos.map(c=>({l:c.nombre.split(' ')[0],v:c.pct,mx:100,col:c.pct>=70?'var(--green)':'var(--amber)',d:c.pct+'%'})));
+  document.getElementById('bar-checkins').innerHTML=lista.map(c=>`<div class="bar-row"><div class="bar-label">${c.nombre.split(' ')[0]}</div><div style="flex:1;display:flex;align-items:center;gap:8px">${c.status!=='offline'?`<span style="font-family:var(--font-mono);font-size:11px;color:var(--green)">↑ ${c.checkin}</span><span style="color:var(--text3)">→</span><span style="font-family:var(--font-mono);font-size:11px;color:var(--text2)">${c.co||'activo'}</span>`:'<span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">Sin registro</span>'}</div></div>`).join('');
+};
+
+function renderBar(id,items){
+  document.getElementById(id).innerHTML=items.length===0
+    ?'<div style="font-size:12px;color:var(--text3);padding:8px;font-family:var(--font-mono)">Sin datos</div>'
+    :items.map(x=>`<div class="bar-row"><div class="bar-label" title="${x.l}">${x.l}</div><div class="bar-track"><div class="bar-fill" style="width:${(x.v/x.mx*100).toFixed(1)}%;background:${x.col}"></div></div><div class="bar-val">${x.d}</div></div>`).join('');
 }
 
-// ══ PLANILLAS ════════════════════════════════════════════
-function renderPlanillas() {
-  const tbody = document.getElementById('planilla-tbody');
-  const datos = [
-    { nombre:'Ana García',    dias:22, hTotal:'176h 20m', hActivas:'142h 10m', pct:'80%', primerCI:'07:58', ultimoCO:'17:52' },
-    { nombre:'Luis Ramírez',  dias:21, hTotal:'168h 05m', hActivas:'134h 40m', pct:'80%', primerCI:'08:01', ultimoCO:'17:30' },
-    { nombre:'Carla Medina',  dias:20, hTotal:'160h 00m', hActivas:'119h 20m', pct:'75%', primerCI:'09:15', ultimoCO:'18:10' },
-    { nombre:'Diego Torres',  dias:22, hTotal:'176h 00m', hActivas:'148h 40m', pct:'84%', primerCI:'08:44', ultimoCO:'17:55' },
-    { nombre:'María López',   dias:18, hTotal:'144h 30m', hActivas:'104h 10m', pct:'72%', primerCI:'08:30', ultimoCO:'17:00' },
-    { nombre:'Andrés Castro', dias:19, hTotal:'152h 00m', hActivas:'113h 50m', pct:'75%', primerCI:'08:55', ultimoCO:'17:45' },
-  ];
-  tbody.innerHTML = datos.map(d=>`
-    <tr>
-      <td class="td-name">${d.nombre}</td>
-      <td class="td-mono">${d.dias}</td>
-      <td class="td-hours">${d.hTotal}</td>
-      <td class="td-mono">${d.hActivas}</td>
-      <td class="td-mono">${d.pct}</td>
-      <td class="td-mono" style="color:var(--green)">${d.primerCI}</td>
-      <td class="td-mono" style="color:var(--text2)">${d.ultimoCO}</td>
-    </tr>`).join('');
-}
-
-window.exportarPlanilla = function(tipo) {
-  toast('Exportación a Excel disponible tras conectar Firebase', 'success');
+window.renderPlanillas=function(){
+  const u=document.getElementById('pl-user')?.value||'';
+  const minH=parseInt(document.getElementById('pl-min')?.value||'0');
+  const datos=[
+    {id:'u1',n:'Ana García',    dias:22,ht:1058,ha:825, ci:'07:58',co:'17:52'},
+    {id:'u2',n:'Luis Ramírez',  dias:21,ht:1005,ha:808, ci:'08:01',co:'17:30'},
+    {id:'u3',n:'Carla Medina',  dias:20,ht:960, ha:720, ci:'09:15',co:'18:10'},
+    {id:'u4',n:'Diego Torres',  dias:22,ht:1056,ha:887, ci:'08:44',co:'17:55'},
+    {id:'u5',n:'María López',   dias:18,ht:867, ha:625, ci:'08:30',co:'17:00'},
+    {id:'u6',n:'Andrés Castro', dias:19,ht:912, ha:684, ci:'08:55',co:'17:45'},
+  ].filter(d=>(!u||d.id===u)&&(!minH||Math.floor(d.ht/60)>=minH));
+  document.getElementById('planilla-tbody').innerHTML=datos.length===0
+    ?'<tr><td colspan="7"><div class="empty-state"><p>Sin registros con ese filtro</p></div></td></tr>'
+    :datos.map(d=>{
+      const hT=`${Math.floor(d.ht/60)}h ${d.ht%60}m`,hA=`${Math.floor(d.ha/60)}h ${d.ha%60}m`,pct=Math.round(d.ha/d.ht*100)+'%';
+      return `<tr><td class="td-name">${d.n}</td><td class="td-mono">${d.dias}</td><td class="td-hours">${hT}</td><td class="td-mono">${hA}</td><td class="td-mono">${pct}</td><td class="td-mono" style="color:var(--green)">${d.ci}</td><td class="td-mono">${d.co}</td></tr>`;
+    }).join('');
 };
+window.exportarPlanilla=function(){toast('Exportación Excel disponible al conectar datos reales de Firebase','success');};
 
-// ══ CONFIGURACIÓN ════════════════════════════════════════
-window.toggleConfig = function(el) {
-  el.classList.toggle('on');
-};
-window.guardarConfiguracion = function() {
-  toast('Configuración guardada correctamente', 'success');
-};
+window.toggleConfig=function(el){el.classList.toggle('on');};
+window.guardarConfiguracion=function(){toast('Configuración guardada correctamente','success');};
 
-// ══ MODALES ══════════════════════════════════════════════
-window.openModalColaborador = function() {
+window.openModalColaborador=function(){
   document.getElementById('modal-colab').classList.add('open');
-  document.getElementById('modal-error').style.display = 'none';
-  ['new-nombre','new-email','new-pass'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('modal-error').style.display='none';
+  ['new-nombre','new-email','new-pass'].forEach(id=>document.getElementById(id).value='');
 };
-window.closeModal = function(id) {
-  document.getElementById(id).classList.remove('open');
-};
-
-window.crearColaborador = async function() {
-  const nombre = document.getElementById('new-nombre').value.trim();
-  const email  = document.getElementById('new-email').value.trim();
-  const pass   = document.getElementById('new-pass').value.trim();
-  const rol    = document.getElementById('new-rol').value;
-  const errEl  = document.getElementById('modal-error');
-
-  if(!nombre || !email || !pass) {
-    errEl.textContent = 'Todos los campos son requeridos';
-    errEl.style.display = 'block';
-    return;
-  }
-  if(pass.length < 6) {
-    errEl.textContent = 'La contraseña debe tener mínimo 6 caracteres';
-    errEl.style.display = 'block';
-    return;
-  }
-  errEl.style.display = 'none';
-
-  if(window._fb) {
-    try {
-      const { createUserWithEmailAndPassword, db, doc, setDoc, serverTimestamp } = window._fb;
-      const { auth } = window._fb;
-      const cred = await createUserWithEmailAndPassword(auth, email, pass);
-      await setDoc(doc(db, 'usuarios', cred.user.uid), {
-        nombre, email, rol,
-        activo: true,
-        avatarUrl: '',
-        zonaHoraria: 'America/Bogota',
-        creadoEn: serverTimestamp()
-      });
-      closeModal('modal-colab');
-      toast(`Colaborador ${nombre} creado exitosamente`, 'success');
-      renderColaboradores();
-    } catch(e) {
-      errEl.textContent = e.message;
-      errEl.style.display = 'block';
+window.closeModal=function(id){document.getElementById(id).classList.remove('open');};
+window.crearColaborador=async function(){
+  const nombre=document.getElementById('new-nombre').value.trim();
+  const email=document.getElementById('new-email').value.trim();
+  const pass=document.getElementById('new-pass').value.trim();
+  const rol=document.getElementById('new-rol').value;
+  const errEl=document.getElementById('modal-error');
+  if(!nombre||!email||!pass){errEl.textContent='Todos los campos son requeridos';errEl.style.display='block';return;}
+  if(pass.length<6){errEl.textContent='Contraseña mínimo 6 caracteres';errEl.style.display='block';return;}
+  errEl.style.display='none';
+  if(window._fb){
+    try{
+      const cred=await window._fb.createUserWithEmailAndPassword(window._fb.auth,email,pass);
+      await window._fb.setDoc(window._fb.doc(window._fb.db,'usuarios',cred.user.uid),{nombre,email,rol,activo:true,avatarUrl:'',zonaHoraria:'America/Bogota',creadoEn:window._fb.serverTimestamp()});
+      closeModal('modal-colab');toast(`${nombre} creado exitosamente`,'success');
+    }catch(e){
+      const m={'auth/email-already-in-use':'Correo ya registrado','auth/weak-password':'Contraseña muy débil'};
+      errEl.textContent=m[e.code]||e.message;errEl.style.display='block';
     }
-  } else {
-    closeModal('modal-colab');
-    toast(`Colaborador ${nombre} creado (demo)`, 'success');
   }
 };
 
-// ══ AUTH ═════════════════════════════════════════════════
-window.doLogin = async function() {
-  const email = document.getElementById('login-email').value.trim();
-  const pass  = document.getElementById('login-pass').value;
-  const errEl = document.getElementById('login-error');
-  errEl.style.display = 'none';
-  if(!email || !pass) { errEl.textContent='Completa todos los campos'; errEl.style.display='block'; return; }
-  try {
-    if(window._fb) {
-      await window._fb.signInWithEmailAndPassword(window._fb.auth, email, pass);
-    } else {
-      errEl.textContent = 'Firebase no inicializado — configura las credenciales';
-      errEl.style.display = 'block';
-    }
-  } catch(e) {
-    const msgs = {
-      'auth/invalid-credential':    'Correo o contraseña incorrectos',
-      'auth/user-not-found':        'Usuario no encontrado',
-      'auth/wrong-password':        'Contraseña incorrecta',
-      'auth/too-many-requests':     'Demasiados intentos. Espera unos minutos',
-      'auth/network-request-failed':'Error de conexión. Verifica tu internet',
-    };
-    errEl.textContent = msgs[e.code] || e.message;
-    errEl.style.display = 'block';
+window.doLogin=async function(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  const errEl=document.getElementById('login-error');
+  errEl.style.display='none';
+  if(!email||!pass){errEl.textContent='Completa todos los campos';errEl.style.display='block';return;}
+  try{
+    if(window._fb)await window._fb.signInWithEmailAndPassword(window._fb.auth,email,pass);
+    else{errEl.textContent='Firebase no inicializado';errEl.style.display='block';}
+  }catch(e){
+    const m={'auth/invalid-credential':'Correo o contraseña incorrectos','auth/too-many-requests':'Demasiados intentos','auth/network-request-failed':'Error de conexión'};
+    errEl.textContent=m[e.code]||e.message;errEl.style.display='block';
   }
 };
-window.doLogout = async function() {
-  if(window._fb) await window._fb.signOut(window._fb.auth);
+window.doLogout=async function(){if(window._fb)await window._fb.signOut(window._fb.auth);};
+
+function INI(n){return n.split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase();}
+function SL(s){return{online:'En línea',offline:'Desconectado',away:'Inactivo'}[s]||s;}
+window.toast=function(msg,tipo='success'){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.className=`toast ${tipo} show`;
+  setTimeout(()=>t.classList.remove('show'),3400);
 };
-
-// ══ UTILS ═══════════════════════════════════════════════
-function initials(nombre) {
-  return nombre.split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase();
-}
-function statusLabel(s) {
-  return { online:'En línea', offline:'Desconectado', away:'Inactivo' }[s] || s;
-}
-window.toast = function(msg, tipo='success') {
-  const t = document.getElementById('toast');
-  document.getElementById('toast-msg').textContent = msg;
-  t.className = `toast ${tipo} show`;
-  setTimeout(() => t.classList.remove('show'), 3200);
-};
-
-// Enter key en login
-document.addEventListener('keydown', e => {
-  if(e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
-    doLogin();
-  }
-});
-
-// Click fuera de modal cierra
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', e => {
-    if(e.target === overlay) overlay.classList.remove('open');
-  });
-});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')doLogin();});
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 </script>
 </body>
 </html>
