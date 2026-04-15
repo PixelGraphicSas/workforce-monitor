@@ -1141,9 +1141,9 @@ window.renderPlanillas = function() {
         const promHdia=d.ht>0?`${Math.floor(d.ht/diasEf/60)}h ${Math.round((d.ht/diasEf)%60)}m`:'—';
         const inactTotal=d.inm||Math.round(d.ht*(1-(d.ha/Math.max(d.ht,1))));
         const promInact=d.dias>0?Math.round(inactTotal/diasEf)+'m/d':'—';
-        const pctColor=d.ht>0?(Math.round(d.ha/d.ht*100)>=75?'color:var(--green)':'Math.round(d.ha/d.ht*100)>=55?color:var(--amber)':'color:var(--red)'):'';
-        return `<tr><td class="td-name">${d.n}</td><td class="td-mono">${d.dias}</td><td class="td-hours">${hT}</td><td class="td-mono">${hA}</td><td class="td-mono" style="${d.ht>0?(Math.round(d.ha/d.ht*100)>=75?'color:var(--green)':Math.round(d.ha/d.ht*100)>=55?'color:var(--amber)':'color:var(--red)'):''}";>${pct}</td><td class="td-mono" style="color:var(--accent)">${promHdia}</td><td class="td-mono" style="color:var(--amber)">${promInact}</td><td class="td-mono" style="color:var(--green)">${d.ci}</td><td class="td-mono">${d.co}</td></tr>`;
-      }).join('');
+        const pctVal=d.ht>0?Math.round(d.ha/d.ht*100):0;
+        const pctStyle=pctVal>=75?'color:var(--green)':pctVal>=55?'color:var(--amber)':'color:var(--red)';
+        return `<tr><td class="td-name">${d.n}</td><td class="td-mono">${d.dias}</td><td class="td-hours">${hT}</td><td class="td-mono">${hA}</td><td class="td-mono" style="${d.ht>0?pctStyle:''}">${pct}</td><td class="td-mono" style="color:var(--accent)">${promHdia}</td><td class="td-mono" style="color:var(--amber)">${promInact}</td><td class="td-mono" style="color:var(--green)">${d.ci}</td><td class="td-mono">${d.co}</td></tr>`;
 };
 
 window.exportarPlanilla = function() { toast('Exportación Excel disponible al conectar datos reales de Firebase','success'); };
