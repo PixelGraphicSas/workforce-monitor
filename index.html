@@ -53,7 +53,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .sidebar-bottom{margin-top:auto;padding:16px;border-top:1px solid var(--border);}
 .user-chip{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;cursor:pointer;transition:background 0.15s;}
 .user-chip:hover{background:var(--bg3);}
-.user-avatar{width:30px;height:30px;border-radius:50%;background:var(--accent2);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.user-avatar{width:30px;height:30px;border-radius:50%;background:var(--accent2);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:12px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;}.user-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
 .user-info{flex:1;overflow:hidden;}
 .user-name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .user-role{font-size:10px;color:var(--text2);font-family:var(--font-mono);}
@@ -84,7 +84,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .kpi-card.amber::before{background:var(--amber);}
 .kpi-card.red::before{background:var(--red);}
 .kpi-label{font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--text2);font-family:var(--font-mono);margin-bottom:10px;}
-.kpi-value{font-family:var(--font-head);font-size:32px;font-weight:800;line-height:1;margin-bottom:6px;}
+.kpi-value{font-family:var(--font-body);font-size:32px;font-weight:700;line-height:1;margin-bottom:6px;letter-spacing:-0.5px;}
 .kpi-card.accent .kpi-value{color:var(--accent);}
 .kpi-card.green .kpi-value{color:var(--green);}
 .kpi-card.amber .kpi-value{color:var(--amber);}
@@ -98,7 +98,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .colab-list{padding:8px;}
 .colab-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;transition:background 0.15s;cursor:pointer;}
 .colab-row:hover{background:var(--bg3);}
-.colab-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:13px;font-weight:700;flex-shrink:0;position:relative;}
+.colab-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:13px;font-weight:700;flex-shrink:0;position:relative;overflow:hidden;}.colab-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
 .status-dot{position:absolute;bottom:0;right:0;width:10px;height:10px;border-radius:50%;border:2px solid var(--bg2);}
 .status-dot.online{background:var(--green);}
 .status-dot.offline{background:var(--text3);}
@@ -134,7 +134,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .drawer::-webkit-scrollbar{width:4px;}
 .drawer::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 .drawer-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;position:sticky;top:0;background:var(--bg2);z-index:1;}
-.drawer-avatar{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:18px;font-weight:700;flex-shrink:0;}
+.drawer-avatar{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:18px;font-weight:700;flex-shrink:0;overflow:hidden;}.drawer-avatar img{width:100%;height:100%;object-fit:cover;border-radius:14px;}
 .drawer-name{font-family:var(--font-head);font-size:17px;font-weight:700;}
 .drawer-email{font-size:11px;color:var(--text2);font-family:var(--font-mono);margin-top:2px;}
 .drawer-close{background:var(--bg3);border:1px solid var(--border);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);transition:all 0.15s;flex-shrink:0;}
@@ -174,7 +174,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .colab-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;transition:border-color 0.2s,transform 0.15s;cursor:pointer;}
 .colab-card:hover{border-color:var(--accent);transform:translateY(-1px);}
 .colab-card-top{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
-.colab-card-avatar{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:16px;font-weight:700;flex-shrink:0;}
+.colab-card-avatar{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:16px;font-weight:700;flex-shrink:0;overflow:hidden;}.colab-card-avatar img{width:100%;height:100%;object-fit:cover;border-radius:12px;}
 .colab-card-name{font-family:var(--font-head);font-size:15px;font-weight:600;}
 .colab-card-email{font-size:11px;color:var(--text2);margin-top:2px;}
 .colab-card-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
@@ -422,7 +422,7 @@ tbody tr:hover td{background:var(--bg3);color:var(--text);}
           <select class="filter-select" id="pl-min" onchange="renderPlanillas()"><option value="0">Todas las horas</option><option value="120">Más de 120h</option><option value="160">Más de 160h</option></select>
           <div style="margin-left:auto"><button class="btn-export" onclick="exportarPlanilla()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Exportar Excel</button></div>
         </div>
-        <div class="planilla-wrap"><table><thead><tr><th>Colaborador</th><th>Días trab.</th><th>Horas totales</th><th>Horas activas</th><th>% Productividad</th><th>Primer check-in</th><th>Último check-out</th></tr></thead><tbody id="planilla-tbody"><tr><td colspan="7"><div class="loader-wrap"><div class="spinner"></div></div></td></tr></tbody></table></div>
+        <div class="planilla-wrap"><table><thead><tr><th>Colaborador</th><th>Días trab.</th><th>Horas totales</th><th>Horas activas</th><th>% Productividad</th><th>Prom. h/día</th><th>Prom. inact./día</th><th>Primer check-in</th><th>Último check-out</th></tr></thead><tbody id="planilla-tbody"><tr><td colspan="7"><div class="loader-wrap"><div class="spinner"></div></div></td></tr></tbody></table></div>
       </div>
 
       <!-- CONFIGURACIÓN -->
@@ -519,6 +519,17 @@ tbody tr:hover td{background:var(--bg3);color:var(--text);}
   <div class="modal">
     <button class="modal-close" onclick="closeModal('modal-colab')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     <div class="modal-title">Agregar colaborador</div>
+    <div style="display:flex;justify-content:center;margin-bottom:20px;">
+      <div id="avatar-preview-wrap" style="position:relative;cursor:pointer;" onclick="document.getElementById('avatar-file-input').click()">
+        <div id="avatar-preview" style="width:72px;height:72px;border-radius:50%;background:var(--bg3);border:2px dashed var(--border2);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:border-color 0.2s;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </div>
+        <div style="position:absolute;bottom:0;right:0;width:22px;height:22px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg2);">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+      </div>
+    </div>
+    <input type="file" id="avatar-file-input" accept="image/*" style="display:none" onchange="previewAvatar(this)"/>
     <div class="form-group"><label class="form-label">Nombre completo</label><input type="text" id="new-nombre" class="form-input" placeholder="Ej: Carlos Martínez"/></div>
     <div class="form-group"><label class="form-label">Correo electrónico</label><input type="email" id="new-email" class="form-input" placeholder="carlos@pixelgraphic.co"/></div>
     <div class="form-group"><label class="form-label">Contraseña temporal</label><input type="text" id="new-pass" class="form-input" placeholder="Mínimo 6 caracteres"/></div>
@@ -793,7 +804,7 @@ window.renderLista = function() {
     document.getElementById('colab-list').innerHTML = lista.length === 0
       ? '<div class="empty-state"><p>Sin resultados</p></div>'
       : lista.map(c=>`<div class="colab-row" onclick="openDrawer('${c.id}')">
-          <div class="colab-avatar ${c.color}">${INI(c.nombre)}<div class="status-dot ${c.status}"></div></div>
+          <div class="colab-avatar ${c.color}">${c.avatarUrl?`<img src="${c.avatarUrl}" alt=""/>`:INI(c.nombre)}<div class="status-dot ${c.status}"></div></div>
           <div class="colab-info"><div class="colab-name">${c.nombre}</div><div class="colab-app">${c.status!=='offline'?c.app:'Sin conexión'}</div></div>
           <div class="colab-time">${c.status!=='offline'?`<span class="checkin">↑ ${c.checkin}</span><span class="worked">${c.worked}</span>`:'<span style="color:var(--text3)">—</span>'}</div>
           <div class="status-pill ${c.status}">${SL(c.status)}</div>
@@ -962,34 +973,76 @@ window.renderScreenshots = function() {
 window.renderProductividad = function() {
   const userF = document.getElementById('prod-user')?.value||'';
   let lista = userF ? DC.filter(c=>c.id===userF) : DC;
+  const soloUno = lista.length === 1;
 
   if (periodo === 'dia') {
-    // Vista diaria — igual que antes
     const activos = lista.filter(c=>c.wm>0);
     const mx = Math.max(...activos.map(c=>c.wm),1);
-    renderBar('bar-horas', activos.map(c=>({l:c.nombre.split(' ')[0],v:c.wm,mx,col:'var(--accent)',d:c.worked})));
-    const am={};lista.forEach(c=>{(DAPPS[c.id]||[]).forEach(a=>{am[a.a]=(am[a.a]||0)+a.m;});});
-    const aa=Object.entries(am).sort((a,b)=>b[1]-a[1]).slice(0,6);
-    renderBar('bar-apps',aa.map(([a,m])=>({l:a,v:m,mx:aa[0][1]||1,col:'var(--green)',d:m+'m'})));
-    renderBar('bar-actividad',activos.map(c=>({l:c.nombre.split(' ')[0],v:c.pct,mx:100,col:c.pct>=70?'var(--green)':'var(--amber)',d:c.pct+'%'})));
-    renderCheckins(lista);
 
+    if (soloUno) {
+      // Vista individual: 4 paneles sobre ese colaborador
+      const cu = lista[0];
+      // Panel 1: horas vs % actividad
+      const panelH = document.getElementById('bar-horas').closest('.panel').querySelector('.panel-title');
+      if(panelH) panelH.textContent = `Horas · ${cu.nombre.split(' ')[0]}`;
+      renderBar('bar-horas', cu.wm>0 ? [{l:'Trabajadas',v:cu.wm,mx:540,col:'var(--accent)',d:cu.worked},{l:'Activas',v:Math.round(cu.wm*cu.pct/100),mx:540,col:'var(--green)',d:Math.round(cu.wm*cu.pct/100)+'m'},{l:'Inactivas',v:cu.inm,mx:540,col:'var(--amber)',d:cu.inm+'m'}] : []);
+      // Panel 2: apps
+      const panelA = document.getElementById('bar-apps').closest('.panel').querySelector('.panel-title');
+      if(panelA) panelA.textContent = `Apps · ${cu.nombre.split(' ')[0]}`;
+      const apps = DAPPS[cu.id]||[]; const mxA = Math.max(...apps.map(a=>a.m),1);
+      renderBar('bar-apps', apps.map(a=>({l:a.a,v:a.m,mx:mxA,col:'var(--green)',d:a.m+'m'})));
+      // Panel 3: actividad %
+      const panelAct = document.getElementById('bar-actividad').closest('.panel').querySelector('.panel-title');
+      if(panelAct) panelAct.textContent = `Actividad · ${cu.nombre.split(' ')[0]}`;
+      renderBar('bar-actividad', [{l:'% Activo',v:cu.pct,mx:100,col:cu.pct>=70?'var(--green)':'var(--amber)',d:cu.pct+'%'},{l:'% Inactivo',v:100-cu.pct,mx:100,col:'var(--red)',d:(100-cu.pct)+'%'}]);
+      // Panel 4: inactividades
+      const panelCI = document.getElementById('bar-checkins').closest('.panel').querySelector('.panel-title');
+      if(panelCI) panelCI.textContent = `Inactividades · ${cu.nombre.split(' ')[0]}`;
+      const inacts = DINACT[cu.id]||[];
+      document.getElementById('bar-checkins').innerHTML = inacts.length===0
+        ? '<div style="padding:16px;font-size:12px;color:var(--text3);font-family:var(--font-mono)">Sin inactividades registradas hoy</div>'
+        : inacts.map(i=>`<div class="bar-row"><div class="bar-label">${i.i}–${i.f}</div><div class="bar-track"><div class="bar-fill" style="width:${(i.m/30*100).toFixed(0)}%;background:var(--amber)"></div></div><div class="bar-val">${i.m}m</div></div>`).join('');
+    } else {
+      // Vista equipo
+      ['bar-horas','bar-apps','bar-actividad','bar-checkins'].forEach(id=>{
+        const pt = document.getElementById(id).closest('.panel')?.querySelector('.panel-title');
+        if(pt) pt.textContent = id==='bar-horas'?'Horas trabajadas':id==='bar-apps'?'Apps más usadas':id==='bar-actividad'?'% Actividad vs inactividad':'Check-in / Check-out';
+      });
+      renderBar('bar-horas', activos.map(c=>({l:c.nombre.split(' ')[0],v:c.wm,mx,col:'var(--accent)',d:c.worked})));
+      const am={};lista.forEach(c=>{(DAPPS[c.id]||[]).forEach(a=>{am[a.a]=(am[a.a]||0)+a.m;});});
+      const aa=Object.entries(am).sort((a,b)=>b[1]-a[1]).slice(0,6);
+      renderBar('bar-apps',aa.map(([a,m])=>({l:a,v:m,mx:aa[0][1]||1,col:'var(--green)',d:m+'m'})));
+      renderBar('bar-actividad',activos.map(c=>({l:c.nombre.split(' ')[0],v:c.pct,mx:100,col:c.pct>=70?'var(--green)':'var(--amber)',d:c.pct+'%'})));
+      renderCheckins(lista);
+    }
   } else {
-    // Vista período — barras por día + resumen
-    const diasData = getMetricasPorDia();
-    const laborales = diasData.filter(d=>d.presentes>0);
+    // Vista período
+    ['bar-horas','bar-apps','bar-actividad','bar-checkins'].forEach(id=>{
+      const pt = document.getElementById(id).closest('.panel')?.querySelector('.panel-title');
+      if(pt) pt.textContent = id==='bar-horas'?'Horas prom./día equipo':id==='bar-apps'?'Presentes por día':id==='bar-actividad'?'% actividad promedio':'Resumen período';
+    });
 
-    // Panel 1: horas promedio del equipo por día → barras
-    renderBarTrend('bar-horas', diasData, d=>d.wmProm, 'var(--accent)', m=>`${Math.floor(m/60)}h`, 'Horas prom./día equipo');
-
-    // Panel 2: presentes por día → barras
-    renderBarTrend('bar-apps', diasData, d=>d.presentes, 'var(--green)', v=>v+'p', 'Presentes por día');
-
-    // Panel 3: % actividad promedio por día → barras con color semáforo
-    renderBarTrend('bar-actividad', diasData, d=>d.pctProm, null, v=>v+'%', '% actividad promedio');
-
-    // Panel 4: resumen período por colaborador → tabla
-    renderResumenPeriodo('bar-checkins', lista);
+    if (soloUno) {
+      // Período individual: barras por día de ese colaborador
+      const cu = lista[0];
+      const fechas = getFechasPeriodo().filter(f=>{ const d=new Date(f).getDay(); return d>=1&&d<=5; });
+      const regsC = (HISTORICO[cu.id]||[]).filter(r=>fechas.includes(r.fecha));
+      const diasD = fechas.map(f=>{ const r=regsC.find(x=>x.fecha===f); const d=new Date(f); return {fecha:f,etiq:d.getDate()+'/'+(d.getMonth()+1),wmProm:r?.wm||0,pctProm:r?.pct||0,presentes:r?.presente?1:0}; });
+      document.getElementById('bar-horas').closest('.panel').querySelector('.panel-title').textContent=`Horas · ${cu.nombre.split(' ')[0]}`;
+      document.getElementById('bar-apps').closest('.panel').querySelector('.panel-title').textContent=`% Actividad · ${cu.nombre.split(' ')[0]}`;
+      renderBarTrend('bar-horas', diasD, d=>d.wmProm, 'var(--accent)', m=>m>0?`${Math.floor(m/60)}h`:'0', 'Horas/día');
+      renderBarTrend('bar-apps', diasD, d=>d.pctProm, null, v=>v+'%', '% actividad/día');
+      const mP = getMetricasPeriodo(cu.id);
+      const inactProm = mP.dias>0?Math.round(mP.inmTotal/mP.dias):0;
+      renderBar('bar-actividad',[{l:'% Activo prom.',v:mP.pctProm,mx:100,col:mP.pctProm>=70?'var(--green)':'var(--amber)',d:mP.pctProm+'%'},{l:'Días presentes',v:mP.dias,mx:Math.max(fechas.length,1),col:'var(--accent)',d:mP.dias+'d'}]);
+      document.getElementById('bar-checkins').innerHTML=`<div class="bar-row"><div class="bar-label">Apps top</div><div style="flex:1">${(DAPPS[cu.id]||[]).slice(0,3).map(a=>`<span style="font-family:var(--font-mono);font-size:11px;color:var(--text2);margin-right:12px">${a.a} ${Math.round(a.m*(mP.dias||1)/5)}m</span>`).join('')}</div></div><div class="bar-row"><div class="bar-label">Inact. prom.</div><div style="flex:1;font-family:var(--font-mono);font-size:11px;color:var(--amber)">${inactProm}m/día</div></div>`;
+    } else {
+      const diasData = getMetricasPorDia();
+      renderBarTrend('bar-horas', diasData, d=>d.wmProm, 'var(--accent)', m=>`${Math.floor(m/60)}h`, 'Horas prom./día equipo');
+      renderBarTrend('bar-apps', diasData, d=>d.presentes, 'var(--green)', v=>v+'p', 'Presentes por día');
+      renderBarTrend('bar-actividad', diasData, d=>d.pctProm, null, v=>v+'%', '% actividad promedio');
+      renderResumenPeriodo('bar-checkins', lista);
+    }
   }
   document.getElementById('prod-fecha-lbl').textContent = periodoLabel();
 };
@@ -1066,9 +1119,8 @@ window.renderPlanillas = function() {
 
   const datos = DC.filter(c=>!userF||c.id===userF).map(c=>{
     if (periodo === 'dia') {
-      // datos fijos de demo para hoy
-      const demo={u1:{dias:1,ht:383,ha:299,ci:'07:58',co:'17:52'},u2:{dias:1,ht:395,ha:324,ci:'08:01',co:'17:30'},u3:{dias:1,ht:307,ha:181,ci:'09:15',co:'18:10'},u4:{dias:1,ht:352,ha:296,ci:'08:44',co:'17:55'},u5:{dias:0,ht:0,ha:0,ci:'—',co:'—'},u6:{dias:0,ht:0,ha:0,ci:'—',co:'—'}};
-      return {id:c.id, n:c.nombre, ...(demo[c.id]||{dias:0,ht:0,ha:0,ci:'—',co:'—'})};
+      const demo={u1:{dias:1,ht:383,ha:299,inm:18,ci:'07:58',co:'17:52'},u2:{dias:1,ht:395,ha:324,inm:11,ci:'08:01',co:'17:30'},u3:{dias:1,ht:307,ha:181,inm:37,ci:'09:15',co:'18:10'},u4:{dias:1,ht:352,ha:296,inm:9,ci:'08:44',co:'17:55'},u5:{dias:0,ht:0,ha:0,inm:0,ci:'—',co:'—'},u6:{dias:0,ht:0,ha:0,inm:0,ci:'—',co:'—'}};
+      return {id:c.id, n:c.nombre, ...(demo[c.id]||{dias:0,ht:0,ha:0,inm:0,ci:'—',co:'—'})};
     }
     const m = getMetricasPeriodo(c.id);
     const regs = m.registros||[];
@@ -1083,7 +1135,12 @@ window.renderPlanillas = function() {
         const hT=d.ht>0?`${Math.floor(d.ht/60)}h ${d.ht%60}m`:'—';
         const hA=d.ha>0?`${Math.floor(d.ha/60)}h ${d.ha%60}m`:'—';
         const pct=d.ht>0?Math.round(d.ha/d.ht*100)+'%':'—';
-        return `<tr><td class="td-name">${d.n}</td><td class="td-mono">${d.dias}</td><td class="td-hours">${hT}</td><td class="td-mono">${hA}</td><td class="td-mono">${pct}</td><td class="td-mono" style="color:var(--green)">${d.ci}</td><td class="td-mono">${d.co}</td></tr>`;
+        const diasEf=Math.max(d.dias,1);
+        const promHdia=d.ht>0?`${Math.floor(d.ht/diasEf/60)}h ${Math.round((d.ht/diasEf)%60)}m`:'—';
+        const inactTotal=d.inm||Math.round(d.ht*(1-(d.ha/Math.max(d.ht,1))));
+        const promInact=d.dias>0?Math.round(inactTotal/diasEf)+'m/d':'—';
+        const pctColor=d.ht>0?(Math.round(d.ha/d.ht*100)>=75?'color:var(--green)':'Math.round(d.ha/d.ht*100)>=55?color:var(--amber)':'color:var(--red)'):'';
+        return `<tr><td class="td-name">${d.n}</td><td class="td-mono">${d.dias}</td><td class="td-hours">${hT}</td><td class="td-mono">${hA}</td><td class="td-mono" style="${d.ht>0?(Math.round(d.ha/d.ht*100)>=75?'color:var(--green)':Math.round(d.ha/d.ht*100)>=55?'color:var(--amber)':'color:var(--red)'):''}";>${pct}</td><td class="td-mono" style="color:var(--accent)">${promHdia}</td><td class="td-mono" style="color:var(--amber)">${promInact}</td><td class="td-mono" style="color:var(--green)">${d.ci}</td><td class="td-mono">${d.co}</td></tr>`;
       }).join('');
 };
 
@@ -1098,8 +1155,54 @@ window.openModalColaborador = function() {
   document.getElementById('modal-colab').classList.add('open');
   document.getElementById('modal-error').style.display='none';
   ['new-nombre','new-email','new-pass'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('avatar-file-input').value='';
+  const ap=document.getElementById('avatar-preview');
+  if(ap){ap.innerHTML='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>';ap.style.border='2px dashed var(--border2)';}
 };
 window.closeModal = function(id) { document.getElementById(id).classList.remove('open'); };
+// ── AVATAR UPLOAD ────────────────────────────────────────
+window.previewAvatar = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview = document.getElementById('avatar-preview');
+    preview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`;
+    preview.style.border = '2px solid var(--accent)';
+  };
+  reader.readAsDataURL(file);
+};
+
+async function uploadAvatarToFirebase(file, uid) {
+  // Convertir imagen a base64 y guardar en Firestore como dataURL
+  // (sin Cloud Storage SDK nativo, usamos base64 en Firestore para avatares pequeños)
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 120; canvas.height = 120;
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    img.onload = () => {
+      // Crop cuadrado centrado
+      const s = Math.min(img.width, img.height);
+      const sx = (img.width - s) / 2, sy = (img.height - s) / 2;
+      ctx.drawImage(img, sx, sy, s, s, 0, 0, 120, 120);
+      resolve(canvas.toDataURL('image/jpeg', 0.8));
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+// Actualizar avatar en todos los lugares del DOM donde aparece el usuario
+function updateAvatarInDOM(uid, avatarUrl) {
+  // Actualiza DC data
+  const c = DC.find(x=>x.id===uid);
+  if (c) c.avatarUrl = avatarUrl;
+  // Re-render vista activa
+  if (vistaActual === 'colaboradores') renderColaboradores();
+  if (vistaActual === 'tablero') renderLista();
+}
+
 window.crearColaborador = async function() {
   const nombre=document.getElementById('new-nombre').value.trim();
   const email=document.getElementById('new-email').value.trim();
@@ -1112,7 +1215,16 @@ window.crearColaborador = async function() {
   if(window._fb){
     try{
       const cred=await window._fb.createUserWithEmailAndPassword(window._fb.auth,email,pass);
-      await window._fb.setDoc(window._fb.doc(window._fb.db,'usuarios',cred.user.uid),{nombre,email,rol,activo:true,avatarUrl:'',zonaHoraria:'America/Bogota',creadoEn:window._fb.serverTimestamp()});
+      let avatarUrl = '';
+      const avatarFile = document.getElementById('avatar-file-input').files[0];
+      if (avatarFile) {
+        try { avatarUrl = await uploadAvatarToFirebase(avatarFile, cred.user.uid); } catch(e) { console.warn('Avatar upload failed:', e); }
+      }
+      await window._fb.setDoc(window._fb.doc(window._fb.db,'usuarios',cred.user.uid),{nombre,email,rol,activo:true,avatarUrl,zonaHoraria:'America/Bogota',creadoEn:window._fb.serverTimestamp()});
+      // Reset avatar preview
+      const ap=document.getElementById('avatar-preview');
+      if(ap){ap.innerHTML='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>';ap.style.border='2px dashed var(--border2)';}
+      document.getElementById('avatar-file-input').value='';
       closeModal('modal-colab'); toast(`${nombre} creado exitosamente`,'success');
     }catch(e){
       const m={'auth/email-already-in-use':'Correo ya registrado','auth/weak-password':'Contraseña muy débil'};
