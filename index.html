@@ -1086,16 +1086,18 @@ function renderResumenPeriodo(id, lista) {
   wrap.innerHTML = lista.map(c=>{
     const m = getMetricasPeriodo(c.id);
     const h = Math.floor(m.wmTotal/60), mn = m.wmTotal%60;
-    return `<div class="bar-row">
-      <div class="bar-label" title="${c.nombre}">${c.nombre.split(' ')[0]}</div>
-      <div style="flex:1;display:flex;align-items:center;gap:8px;min-width:0;">
-        <span style="font-family:var(--font-mono);font-size:11px;color:var(--accent)">${m.wmTotal>0?`${h}h ${mn}m`:'—'}</span>
-        <span style="font-size:11px;color:var(--text3)">·</span>
-        <span style="font-family:var(--font-mono);font-size:11px;color:${m.pctProm>=70?'var(--green)':'var(--amber)'}">${m.pctProm>0?m.pctProm+'%':'—'}</span>
-        <span style="font-size:11px;color:var(--text3)">·</span>
-        <span style="font-family:var(--font-mono);font-size:11px;color:var(--text2)">${m.dias}d</span>
-      </div>
-    </div>`;
+    const horasStr = m.wmTotal>0 ? (Math.floor(m.wmTotal/60)+'h '+( m.wmTotal%60)+'m') : '—';
+    const pctStr = m.pctProm>0 ? m.pctProm+'%' : '—';
+    const pctCol = m.pctProm>=70 ? 'var(--green)' : 'var(--amber)';
+    return '<div class="bar-row">'
+      + '<div class="bar-label" title="'+c.nombre+'">'+c.nombre.split(' ')[0]+'</div>'
+      + '<div style="flex:1;display:flex;align-items:center;gap:8px;min-width:0;">'
+      + '<span style="font-family:var(--font-mono);font-size:11px;color:var(--accent)">'+horasStr+'</span>'
+      + '<span style="font-size:11px;color:var(--text3)">·</span>'
+      + '<span style="font-family:var(--font-mono);font-size:11px;color:'+pctCol+'">'+pctStr+'</span>'
+      + '<span style="font-size:11px;color:var(--text3)">·</span>'
+      + '<span style="font-family:var(--font-mono);font-size:11px;color:var(--text2)">'+m.dias+'d</span>'
+      + '</div></div>';
   }).join('');
 }
 
@@ -1126,26 +1128,36 @@ window.renderPlanillas = function() {
     }
     const m = getMetricasPeriodo(c.id);
     const regs = m.registros||[];
-    const ci = regs.length>0 ? regs.reduce((a,r)=>r.ci<a?r.ci:a, '23:59') : '—';
-    const co = regs.length>0 ? regs.reduce((a,r)=>r.co>a?r.co:a, '00:00') : '—';
-    return {id:c.id, n:c.nombre, dias:m.dias, ht:m.wmTotal, ha:Math.round(m.wmTotal*m.pctProm/100), ci, co};
+    const ci = regs.length>0 ? regs.reduce((a,r)=>r.ci<a?r.ci:a,'23:59') : '—';
+    const co = regs.length>0 ? regs.reduce((a,r)=>r.co>a?r.co:a,'00:00') : '—';
+    return {id:c.id, n:c.nombre, dias:m.dias, ht:m.wmTotal, ha:Math.round(m.wmTotal*m.pctProm/100), inm:m.inmTotal, ci, co};
   }).filter(d=>(!minH||Math.floor(d.ht/60)>=minH));
 
   document.getElementById('planilla-tbody').innerHTML = datos.length===0
-    ? '<tr><td colspan="7"><div class="empty-state"><p>Sin registros con ese filtro</p></div></td></tr>'
-    : datos.map(d=>{
-        const hT=d.ht>0?`${Math.floor(d.ht/60)}h ${d.ht%60}m`:'—';
-        const hA=d.ha>0?`${Math.floor(d.ha/60)}h ${d.ha%60}m`:'—';
-        const pct=d.ht>0?Math.round(d.ha/d.ht*100)+'%':'—';
-        const diasEf=Math.max(d.dias,1);
-        const promHdia=d.ht>0?`${Math.floor(d.ht/diasEf/60)}h ${Math.round((d.ht/diasEf)%60)}m`:'—';
-        const inactTotal=d.inm||Math.round(d.ht*(1-(d.ha/Math.max(d.ht,1))));
-        const promInact=d.dias>0?Math.round(inactTotal/diasEf)+'m/d':'—';
-        const pctVal=d.ht>0?Math.round(d.ha/d.ht*100):0;
-        const pctStyle=pctVal>=75?'color:var(--green)':pctVal>=55?'color:var(--amber)':'color:var(--red)';
-        return `<tr><td class="td-name">${d.n}</td><td class="td-mono">${d.dias}</td><td class="td-hours">${hT}</td><td class="td-mono">${hA}</td><td class="td-mono" style="${d.ht>0?pctStyle:''}">${pct}</td><td class="td-mono" style="color:var(--accent)">${promHdia}</td><td class="td-mono" style="color:var(--amber)">${promInact}</td><td class="td-mono" style="color:var(--green)">${d.ci}</td><td class="td-mono">${d.co}</td></tr>`;
-};
-
+    ? '<tr><td colspan="9"><div class="empty-state"><p>Sin registros con ese filtro</p></div></td></tr>'
+    : datos.map(function(d) {
+        var diasEf = Math.max(d.dias, 1);
+        var hT = d.ht>0 ? (Math.floor(d.ht/60)+'h '+d.ht%60+'m') : '—';
+        var hA = d.ha>0 ? (Math.floor(d.ha/60)+'h '+d.ha%60+'m') : '—';
+        var pct = d.ht>0 ? Math.round(d.ha/d.ht*100)+'%' : '—';
+        var pctVal = d.ht>0 ? Math.round(d.ha/d.ht*100) : 0;
+        var pctStyle = pctVal>=75 ? 'color:var(--green)' : pctVal>=55 ? 'color:var(--amber)' : 'color:var(--red)';
+        var promHMin = d.ht>0 ? Math.round(d.ht/diasEf) : 0;
+        var promHdia = promHMin>0 ? (Math.floor(promHMin/60)+'h '+promHMin%60+'m') : '—';
+        var inactProm = d.dias>0 ? Math.round((d.inm||0)/diasEf)+'m/d' : '—';
+        return '<tr>'
+          + '<td class="td-name">'+d.n+'</td>'
+          + '<td class="td-mono">'+d.dias+'</td>'
+          + '<td class="td-hours">'+hT+'</td>'
+          + '<td class="td-mono">'+hA+'</td>'
+          + '<td class="td-mono" style="'+pctStyle+'">'+pct+'</td>'
+          + '<td class="td-mono" style="color:var(--accent)">'+promHdia+'</td>'
+          + '<td class="td-mono" style="color:var(--amber)">'+inactProm+'</td>'
+          + '<td class="td-mono" style="color:var(--green)">'+d.ci+'</td>'
+          + '<td class="td-mono">'+d.co+'</td>'
+          + '</tr>';
+      }).join('');
+}
 window.exportarPlanilla = function() { toast('Exportación Excel disponible al conectar datos reales de Firebase','success'); };
 
 // ══ CONFIGURACIÓN ════════════════════════════════════════
