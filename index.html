@@ -632,56 +632,301 @@ onAuthStateChanged(auth,user=>{
 </script>
 
 <script>
-// ══ DATOS DEMO HISTÓRICOS ════════════════════════════════
+// ══ CONSTANTES ═══════════════════════════════════════════
 const AV=['av-blue','av-green','av-amber','av-purple','av-coral','av-teal'];
-const DC=[
-  {id:'u1',nombre:'Ana García',   email:'ana@pixel.co',  rol:'colaborador',color:'av-blue',  status:'online', checkin:'08:14',co:null,  worked:'6h 23m',wm:383,pct:78,inm:18,app:'Figma'},
-  {id:'u2',nombre:'Luis Ramírez', email:'luis@pixel.co', rol:'colaborador',color:'av-green', status:'online', checkin:'08:02',co:null,  worked:'6h 35m',wm:395,pct:82,inm:11,app:'Chrome'},
-  {id:'u3',nombre:'Carla Medina', email:'carla@pixel.co',rol:'supervisor', color:'av-amber', status:'away',   checkin:'09:30',co:null,  worked:'5h 07m',wm:307,pct:59,inm:37,app:'Slack'},
-  {id:'u4',nombre:'Diego Torres', email:'diego@pixel.co',rol:'colaborador',color:'av-purple',status:'online', checkin:'08:45',co:null,  worked:'5h 52m',wm:352,pct:84,inm:9, app:'VS Code'},
-  {id:'u5',nombre:'María López',  email:'maria@pixel.co',rol:'colaborador',color:'av-coral', status:'offline',checkin:'—',   co:'—',   worked:'—',     wm:0,  pct:0, inm:0, app:'—'},
-  {id:'u6',nombre:'Andrés Castro',email:'and@pixel.co',  rol:'colaborador',color:'av-teal',  status:'offline',checkin:'—',   co:'—',   worked:'—',     wm:0,  pct:0, inm:0, app:'—'},
-];
-const DAPPS={u1:[{a:'Figma',m:187},{a:'Chrome',m:94},{a:'Slack',m:62},{a:'Notion',m:40}],u2:[{a:'Chrome',m:210},{a:'Figma',m:88},{a:'Zoom',m:55},{a:'Terminal',m:42}],u3:[{a:'Slack',m:145},{a:'Chrome',m:89},{a:'Notion',m:73}],u4:[{a:'VS Code',m:220},{a:'Terminal',m:78},{a:'Chrome',m:54}],u5:[],u6:[]};
-const DINACT={u1:[{i:'10:22',f:'10:38',m:16},{i:'13:05',f:'13:07',m:2}],u2:[{i:'11:40',f:'11:51',m:11}],u3:[{i:'10:15',f:'10:31',m:16},{i:'11:55',f:'12:13',m:18},{i:'14:20',f:'14:23',m:3}],u4:[{i:'12:00',f:'12:09',m:9}],u5:[],u6:[]};
-const DACT=[
-  {t:'in',n:'Diego Torres',d:'Check-in · MacBook Pro',h:'hace 12 min'},
-  {t:'in',n:'Ana García',d:'Check-in · App activa: Figma',h:'hace 28 min'},
-  {t:'alert',n:'Carla Medina',d:'Inactividad detectada · 18 min',h:'hace 35 min'},
-  {t:'in',n:'Luis Ramírez',d:'Check-in · MacBook Air',h:'hace 1h 02m'},
-  {t:'out',n:'María López',d:'Check-out · Jornada: 7h 45m',h:'hace 2h 10m'},
-  {t:'alert',n:'Andrés Castro',d:'Sin check-in hoy',h:'hace 3h'},
-];
 
-// Datos históricos por día para los últimos 30 días
-// Cada colaborador tiene un array de registros diarios
-function genHistorico() {
-  const hist = {};
-  const dias = ['Lu','Ma','Mi','Ju','Vi'];
-  DC.forEach(c => {
-    hist[c.id] = [];
-    for (let i = 29; i >= 0; i--) {
-      const d = new Date(); d.setDate(d.getDate() - i);
-      const dow = d.getDay(); // 0=dom, 6=sab
-      const esLaboral = dow >= 1 && dow <= 5;
-      if (!esLaboral) { hist[c.id].push({fecha:fmtDate(d), wm:0, pct:0, inm:0, presente:false}); continue; }
-      const ausente = c.status === 'offline' && i < 2;
-      if (ausente) { hist[c.id].push({fecha:fmtDate(d), wm:0, pct:0, inm:0, presente:false}); continue; }
-      const base = c.wm || 420;
-      const variacion = base * (0.85 + Math.random() * 0.3);
-      const wm = Math.round(Math.min(variacion, 540));
-      const pct = Math.round(c.pct * (0.85 + Math.random() * 0.3));
-      const inm = Math.round(c.inm * (0.5 + Math.random() * 1.5));
-      hist[c.id].push({fecha:fmtDate(d), wm, pct:Math.min(pct,95), inm, presente:true,
-        ci:`0${7+Math.floor(Math.random()*2)}:${String(Math.floor(Math.random()*45)).padStart(2,'0')}`,
-        co:`1${6+Math.floor(Math.random()*3)}:${String(Math.floor(Math.random()*59)).padStart(2,'0')}`
+// DC = array vivo de colaboradores — se llena desde Firestore
+let DC = [];
+// DAPPS / DINACT — datos del día por uid, se llenan desde Firestore
+let DAPPS = {};
+let DINACT = {};
+// Feed de actividad reciente
+let DACT = [];
+// Listeners activos de Firestore (para cleanup)
+let _listeners = [];
+
+// ── Helpers de tiempo ────────────────────────────────────
+function tsToHHMM(ts) {
+  if (!ts) return '—';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleTimeString('es-CO', {hour:'2-digit', minute:'2-digit'});
+}
+function minToWorked(min) {
+  if (!min || min === 0) return '—';
+  const h = Math.floor(min/60), m = min%60;
+  return h + 'h ' + m + 'm';
+}
+function tiempoRelativo(ts) {
+  if (!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  const diff = Math.floor((Date.now() - d.getTime()) / 60000);
+  if (diff < 1) return 'hace un momento';
+  if (diff < 60) return 'hace ' + diff + ' min';
+  const h = Math.floor(diff/60);
+  return 'hace ' + h + 'h ' + (diff%60) + 'm';
+}
+
+// ══ CARGA DATOS DESDE FIRESTORE ══════════════════════════
+function suscribirFirestore() {
+  if (!window._fb) return;
+  const { db, collection, query, where, onSnapshot, orderBy, limit } = window._fb;
+  const hoy = fmtDate(new Date());
+
+  // ── 1. Usuarios (en tiempo real) ─────────────────────
+  const unsubUsuarios = onSnapshot(collection(db, 'usuarios'), snap => {
+    snap.docs.forEach((docSnap, i) => {
+      const data = docSnap.data();
+      const uid  = docSnap.id;
+      const existing = DC.findIndex(x => x.id === uid);
+      const colab = {
+        id:        uid,
+        nombre:    data.nombre || 'Sin nombre',
+        email:     data.email  || '',
+        rol:       data.rol    || 'colaborador',
+        activo:    data.activo !== false,
+        avatarUrl: data.avatarUrl || '',
+        color:     AV[existing >= 0 ? existing : (DC.length % AV.length)],
+        // Campos de sesión — se actualizan con listener de sesiones
+        status:    'offline',
+        checkin:   '—',
+        co:        '—',
+        worked:    '—',
+        wm:        0,
+        pct:       0,
+        inm:       0,
+        app:       '—'
+      };
+      if (existing >= 0) {
+        // Preservar datos de sesión al actualizar
+        const prev = DC[existing];
+        colab.status  = prev.status;
+        colab.checkin = prev.checkin;
+        colab.co      = prev.co;
+        colab.worked  = prev.worked;
+        colab.wm      = prev.wm;
+        colab.pct     = prev.pct;
+        colab.inm     = prev.inm;
+        colab.app     = prev.app;
+        colab.color   = prev.color;
+        DC[existing]  = colab;
+      } else {
+        DC.push(colab);
+      }
+    });
+    populateUserSelects();
+    refreshAll();
+  });
+  _listeners.push(unsubUsuarios);
+
+  // ── 2. Sesiones de hoy (en tiempo real) ──────────────
+  const qSesiones = query(
+    collection(db, 'sesiones'),
+    where('fecha', '==', hoy)
+  );
+  const unsubSesiones = onSnapshot(qSesiones, snap => {
+    // Reset status a offline
+    DC.forEach(c => {
+      c.status  = 'offline';
+      c.checkin = '—';
+      c.co      = '—';
+      c.worked  = '—';
+      c.wm      = 0;
+    });
+
+    snap.docs.forEach(docSnap => {
+      const s   = docSnap.data();
+      const uid = s.uid;
+      const c   = DC.find(x => x.id === uid);
+      if (!c) return;
+
+      const checkInTime = tsToHHMM(s.checkIn);
+      const checkOutTime = s.checkOut ? tsToHHMM(s.checkOut) : null;
+      const minTrabajados = s.minutosTrabajados || 0;
+      const minActivos    = s.minutosActivos    || 0;
+      const pct = minTrabajados > 0 ? Math.round(minActivos / minTrabajados * 100) : 0;
+
+      c.checkin = checkInTime;
+      c.co      = checkOutTime;
+      c.worked  = minToWorked(minTrabajados);
+      c.wm      = minTrabajados;
+      c.pct     = pct;
+      c.inm     = s.minutosInactivos || 0;
+
+      if (s.estado === 'cerrada') {
+        c.status = 'offline';
+      } else if (s.estado === 'activa') {
+        // Determinar si inactivo: si minutosInactivos recientes > umbral (1 min)
+        const inactUmbral = 5; // minutos acumulados recientes
+        c.status = (s.minutosInactivos || 0) > inactUmbral ? 'away' : 'online';
+      }
+    });
+
+    refreshAll();
+    actualizarFeedActividad(snap);
+  });
+  _listeners.push(unsubSesiones);
+
+  // ── 3. Apps en uso de hoy (en tiempo real) ────────────
+  const qApps = query(
+    collection(db, 'apps_uso'),
+    where('fecha', '==', hoy)
+  );
+  const unsubApps = onSnapshot(qApps, snap => {
+    DAPPS = {};
+    snap.docs.forEach(docSnap => {
+      const data = docSnap.data();
+      const uid  = data.uid;
+      if (!uid) return;
+      const apps = data.apps || {};
+      DAPPS[uid] = Object.entries(apps)
+        .map(([a, m]) => ({a, m}))
+        .sort((x, y) => y.m - x.m)
+        .slice(0, 8);
+    });
+    if (vistaActual === 'productividad') renderProductividad();
+  });
+  _listeners.push(unsubApps);
+
+  // ── 4. Actividad reciente — últimos 50 registros ──────
+  const qActividad = query(
+    collection(db, 'actividad'),
+    where('fecha', '==', hoy),
+    orderBy('chunk', 'desc'),
+    limit(5)
+  );
+  const unsubActividad = onSnapshot(qActividad, snap => {
+    // Reconstruir inactividades desde registros
+    DINACT = {};
+    snap.docs.forEach(docSnap => {
+      const data = docSnap.data();
+      const uid  = data.uid;
+      if (!uid) return;
+      if (!DINACT[uid]) DINACT[uid] = [];
+      const registros = data.registros || [];
+      // Detectar períodos inactivos consecutivos
+      let inicioInact = null;
+      registros.forEach((r, idx) => {
+        if (r.inactivo && !inicioInact) {
+          inicioInact = r.timestamp;
+        } else if (!r.inactivo && inicioInact) {
+          const durMin = Math.round((new Date(r.timestamp) - new Date(inicioInact)) / 60000);
+          if (durMin >= 1) {
+            DINACT[uid].push({
+              i: new Date(inicioInact).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),
+              f: new Date(r.timestamp).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),
+              m: durMin
+            });
+          }
+          inicioInact = null;
+        }
+        // App activa — actualizar en DC
+        if (idx === registros.length - 1 && r.appActiva) {
+          const col = DC.find(x => x.id === uid);
+          if (col) col.app = r.appActiva;
+        }
+      });
+    });
+    if (vistaActual === 'tablero') renderLista();
+  });
+  _listeners.push(unsubActividad);
+}
+
+function actualizarFeedActividad(snap) {
+  DACT = [];
+  snap.docs.forEach(docSnap => {
+    const s   = docSnap.data();
+    const uid = s.uid;
+    const c   = DC.find(x => x.id === uid);
+    const nombre = c ? c.nombre : uid;
+    if (s.estado === 'activa' && s.checkIn) {
+      DACT.push({
+        t: 'in',
+        n: nombre,
+        d: 'Check-in · ' + (c?.app !== '—' ? 'App: ' + c?.app : s.machineName || ''),
+        h: tiempoRelativo(s.checkIn)
+      });
+    } else if (s.estado === 'cerrada' && s.checkOut) {
+      DACT.push({
+        t: 'out',
+        n: nombre,
+        d: 'Check-out · Jornada: ' + minToWorked(s.minutosTrabajados),
+        h: tiempoRelativo(s.checkOut)
       });
     }
   });
-  return hist;
+  // Colaboradores sin sesión hoy
+  DC.forEach(c => {
+    const tieneSesion = snap.docs.some(d => d.data().uid === c.id);
+    if (!tieneSesion) {
+      DACT.push({t:'alert', n:c.nombre, d:'Sin check-in hoy', h:''});
+    }
+  });
+  DACT.sort((a, b) => {
+    const orden = {in:0, out:1, alert:2};
+    return (orden[a.t]||2) - (orden[b.t]||2);
+  });
 }
+
 function fmtDate(d) { return d.toISOString().split('T')[0]; }
-const HISTORICO = genHistorico();
+
+// HISTORICO: se construye dinámicamente desde datos reales de Firestore
+// Para hoy: usa DC directamente. Para períodos: carga desde sesiones.
+let HISTORICO = {};
+let _histCache = {}; // cache por fecha
+
+async function cargarHistoricoPeriodo(fechas) {
+  if (!window._fb) return;
+  const { db, collection, query, where, getDocs } = window._fb;
+  const fechasFaltantes = fechas.filter(f => !_histCache[f] && new Date(f) < new Date(fmtDate(new Date())));
+  if (fechasFaltantes.length === 0) return;
+
+  try {
+    const q = query(
+      collection(db, 'sesiones'),
+      where('fecha', 'in', fechasFaltantes.slice(0, 10)) // Firestore max 10 en 'in'
+    );
+    const snap = await getDocs(q);
+    snap.docs.forEach(docSnap => {
+      const s = docSnap.data();
+      if (!_histCache[s.fecha]) _histCache[s.fecha] = {};
+      if (!_histCache[s.fecha][s.uid]) _histCache[s.fecha][s.uid] = {
+        fecha: s.fecha, wm: s.minutosTrabajados||0,
+        ha: s.minutosActivos||0, inm: s.minutosInactivos||0,
+        pct: s.minutosTrabajados>0 ? Math.round((s.minutosActivos||0)/s.minutosTrabajados*100) : 0,
+        presente: s.estado==='cerrada' || s.minutosTrabajados>0,
+        ci: tsToHHMM(s.checkIn), co: tsToHHMM(s.checkOut)
+      };
+    });
+  } catch(e) { console.warn('cargarHistoricoPeriodo error:', e); }
+}
+
+function getMetricasPeriodoReal(uid) {
+  const fechas = getFechasPeriodo();
+  const hoy = fmtDate(new Date());
+
+  // Para hoy: usar datos en vivo de DC
+  if (fechas.length === 1 && fechas[0] === hoy) {
+    const c = DC.find(x=>x.id===uid);
+    if (!c || c.wm === 0) return {dias:0, wmTotal:0, pctProm:0, inmTotal:0, presente:false, registros:[]};
+    return {dias:1, wmTotal:c.wm, pctProm:c.pct, inmTotal:c.inm, presente:true,
+      registros:[{fecha:hoy, wm:c.wm, pct:c.pct, inm:c.inm, presente:true, ci:c.checkin, co:c.co||'—'}]};
+  }
+
+  // Para períodos: usar cache de Firestore
+  const registros = fechas
+    .map(f => (_histCache[f]||{})[uid])
+    .filter(r => r && r.presente);
+
+  if (registros.length === 0) return {dias:0, wmTotal:0, pctProm:0, inmTotal:0, presente:false, registros:[]};
+  return {
+    dias:     registros.length,
+    wmTotal:  registros.reduce((s,r)=>s+r.wm, 0),
+    pctProm:  Math.round(registros.reduce((s,r)=>s+r.pct, 0) / registros.length),
+    inmTotal: registros.reduce((s,r)=>s+r.inm, 0),
+    presente: true,
+    registros
+  };
+}
 
 // ══ ESTADO GLOBAL ════════════════════════════════════════
 let periodo = 'dia'; // dia | semana | mes | rango
@@ -689,13 +934,53 @@ let rangoActivo = false;
 let filtroE = '';
 let vistaActual = 'tablero';
 
+// Alias para compatibilidad — usa datos reales si disponibles
+function getMetricasPeriodo(uid) {
+  return getMetricasPeriodoReal(uid);
+}
+
+// getMetricasPorDia con datos reales
+function getMetricasPorDia() {
+  const fechas = getFechasPeriodo();
+  const hoy    = fmtDate(new Date());
+  return fechas.map(f => {
+    const esHoy = f === hoy;
+    let presentes = 0, wmSum = 0, pctSum = 0, count = 0;
+    DC.forEach(c => {
+      if (esHoy) {
+        if (c.wm > 0) { presentes++; wmSum += c.wm; pctSum += c.pct; count++; }
+      } else {
+        const r = (_histCache[f]||{})[c.id];
+        if (r && r.presente) { presentes++; wmSum += r.wm; pctSum += r.pct; count++; }
+      }
+    });
+    const d = new Date(f);
+    const etiq = periodo === 'mes'
+      ? d.getDate()+'/'
+      : ['Do','Lu','Ma','Mi','Ju','Vi','Sa'][d.getDay()];
+    return {
+      fecha:    f,
+      etiq,
+      wmProm:   count > 0 ? Math.round(wmSum/count) : 0,
+      pctProm:  count > 0 ? Math.round(pctSum/count) : 0,
+      presentes
+    };
+  }).filter(x => periodo !== 'mes' || new Date(x.fecha).getDay() !== 0);
+}
+
 // ══ INIT ═════════════════════════════════════════════════
 function initApp() {
   const now = new Date();
   document.getElementById('range-inicio').value = fmtDate(new Date(now.getFullYear(), now.getMonth(), 1));
   document.getElementById('range-fin').value = fmtDate(now);
-  populateUserSelects();
+  // Mostrar tablero inmediatamente con estado de carga
   showView('tablero', document.querySelector('.nav-item.active'));
+  // Suscribir a Firestore en tiempo real
+  suscribirFirestore();
+  // Auto-refresh del reloj cada 60 seg
+  setInterval(() => {
+    document.getElementById('hora-act').textContent = 'Actualizado ' + new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+  }, 60000);
 }
 
 function populateUserSelects() {
@@ -707,14 +992,18 @@ function populateUserSelects() {
 }
 
 // ══ SELECTOR DE PERÍODO ══════════════════════════════════
-window.setPeriodo = function(p, btn) {
+window.setPeriodo = async function(p, btn) {
   periodo = p;
   document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   else document.getElementById('pbtn-rango').classList.add('active');
-  // live badge: solo en día
   const badge = document.getElementById('live-badge-txt');
   badge.textContent = p === 'dia' ? 'En vivo' : periodoLabel();
+  // Cargar histórico si es período diferente a hoy
+  if (p !== 'dia') {
+    const fechas = getFechasPeriodo();
+    await cargarHistoricoPeriodo(fechas);
+  }
   refreshAll();
 };
 
