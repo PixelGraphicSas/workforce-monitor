@@ -600,7 +600,8 @@ tbody tr:hover td{background:var(--bg3);color:var(--text);}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, where, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, where, orderBy, limit, serverTimestamp, enableNetwork, disableNetwork } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 const firebaseConfig = {
   apiKey:"AIzaSyCUY99wqKMG7YOUy9Z5bGMfa_3z47Rt0mc",
   authDomain:"workforce-monitor-pixel.firebaseapp.com",
@@ -609,12 +610,105 @@ const firebaseConfig = {
   messagingSenderId:"107288241904",
   appId:"1:107288241904:web:09d2325b5f5ad4b3fb8435"
 };
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const db=getFirestore(app);
-window._fb={auth,db,collection,doc,getDoc,getDocs,setDoc,addDoc,updateDoc,deleteDoc,onSnapshot,query,where,orderBy,limit,serverTimestamp,signInWithEmailAndPassword,signOut,createUserWithEmailAndPassword};
-onAuthStateChanged(auth,user=>{
-  if(user){
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+window._fb = {
+  auth, db,
+  collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc,
+  onSnapshot, query, where, orderBy, limit, serverTimestamp,
+  signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword,
+  enableNetwork, disableNetwork
+};
+
+// ── REST fallback for when SDK onSnapshot fails with permission-denied ──
+window._fbREST = async function(path) {
+  const user = auth.currentUser;
+  if (!user) return null;
+  const token = await user.getIdToken(true); // force fresh token
+  const url = 'https://firestore.googleapis.com/v1/projects/workforce-monitor-pixel/databases/(default)/documents/' + path;
+  const resp = await fetch(url, { headers: { Authorization: 'Bearer ' + token }});
+  if (!resp.ok) { console.error('REST error', resp.status, await resp.text()); return null; }
+  return resp.json();
+};
+
+window._fbRESTQuery = async function(collection, filters) {
+  const user = auth.currentUser;
+  if (!user) return [];
+  const token = await user.getIdToken(true);
+  const url = 'https://firestore.googleapis.com/v1/projects/workforce-monitor-pixel/databases/(default)/documents:runQuery';
+  const body = {
+    structuredQuery: {
+      from: [{ collectionId: collection }],
+      where: filters ? {
+        fieldFilter: {
+          field: { fieldPath: filters[0] },
+          op: filters[1],
+          value: { stringValue: filters[2] }
+        }
+      } : undefined
+    }
+  };
+  const resp = await fetch(url, {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!resp.ok) { console.error('REST query error', resp.status); return []; }
+  const results = await resp.json();
+  return results.filter(r => r.document).map(r => {
+    const fields = r.document.fields || {};
+    const data = {};
+    Object.entries(fields).forEach(([k,v]) => {
+      if (v.stringValue  !== undefined) data[k] = v.stringValue;
+      else if (v.integerValue !== undefined) data[k] = parseInt(v.integerValue);
+      else if (v.doubleValue  !== undefined) data[k] = v.doubleValue;
+      else if (v.booleanValue !== undefined) data[k] = v.booleanValue;
+      else if (v.timestampValue !== undefined) data[k] = { toDate: () => new Date(v.timestampValue) };
+      else if (v.nullValue !== undefined) data[k] = null;
+      else if (v.mapValue !== undefined) {
+        const map = {};
+        Object.entries(v.mapValue.fields||{}).forEach(([mk,mv]) => {
+          if (mv.integerValue !== undefined) map[mk] = parseInt(mv.integerValue);
+          else if (mv.stringValue !== undefined) map[mk] = mv.stringValue;
+        });
+        data[k] = map;
+      }
+    });
+    const name = r.document.name || '';
+    data._id = name.split('/').pop();
+    return data;
+  });
+};
+
+window._fbRESTWrite = async function(collection, docId, data) {
+  const user = auth.currentUser;
+  if (!user) return false;
+  const token = await user.getIdToken(true);
+  const fields = {};
+  Object.entries(data).forEach(([k,v]) => {
+    if (typeof v === 'string')  fields[k] = { stringValue: v };
+    else if (typeof v === 'number' && Number.isInteger(v)) fields[k] = { integerValue: String(v) };
+    else if (typeof v === 'number') fields[k] = { doubleValue: v };
+    else if (typeof v === 'boolean') fields[k] = { booleanValue: v };
+    else if (v === null) fields[k] = { nullValue: null };
+  });
+  const qs = Object.keys(data).map(k => 'updateMask.fieldPaths=' + k).join('&');
+  const url = 'https://firestore.googleapis.com/v1/projects/workforce-monitor-pixel/databases/(default)/documents/' + collection + '/' + docId + '?' + qs;
+  const resp = await fetch(url, {
+    method: 'PATCH',
+    headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fields })
+  });
+  return resp.ok;
+};
+
+onAuthStateChanged(auth, async user => {
+  if (user) {
+    // Force fresh token immediately
+    await user.getIdToken(true);
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app').style.display='block';
     const ini=(user.displayName||user.email||'AD').split(/[\s@]/)[0].slice(0,2).toUpperCase();
@@ -624,7 +718,7 @@ onAuthStateChanged(auth,user=>{
     document.getElementById('cfg-project-id').textContent=firebaseConfig.projectId;
     window._currentUser=user;
     initApp();
-  }else{
+  } else {
     document.getElementById('login-screen').style.display='flex';
     document.getElementById('app').style.display='none';
   }
@@ -666,170 +760,107 @@ function tiempoRelativo(ts) {
   return 'hace ' + h + 'h ' + (diff%60) + 'm';
 }
 
-// ══ CARGA DATOS DESDE FIRESTORE ══════════════════════════
-function suscribirFirestore() {
-  if (!window._fb) return;
-  const { db, collection, query, where, onSnapshot, orderBy, limit } = window._fb;
+// ══ CARGA DATOS DESDE FIRESTORE (REST API) ══════════════
+let _pollInterval = null;
+
+async function suscribirFirestore() {
+  if (!window._fbRESTQuery) return;
+  // Carga inicial
+  await cargarDatosFirestore();
+  // Polling cada 30 segundos para actualización en tiempo real
+  if (_pollInterval) clearInterval(_pollInterval);
+  _pollInterval = setInterval(cargarDatosFirestore, 30000);
+}
+
+async function cargarDatosFirestore() {
   const hoy = fmtDate(new Date());
+  try {
+    // ── 1. Usuarios ─────────────────────────────────────
+    const usuarios = await window._fbRESTQuery('usuarios');
+    if (usuarios.length > 0) {
+      usuarios.forEach((data, i) => {
+        const uid = data._id;
+        const existing = DC.findIndex(x => x.id === uid);
+        const colab = {
+          id:        uid,
+          nombre:    data.nombre || 'Sin nombre',
+          email:     data.email  || '',
+          rol:       data.rol    || 'colaborador',
+          activo:    data.activo !== false,
+          avatarUrl: data.avatarUrl || '',
+          color:     AV[existing >= 0 ? existing : (i % AV.length)],
+          status:    existing >= 0 ? DC[existing].status  : 'offline',
+          checkin:   existing >= 0 ? DC[existing].checkin : '—',
+          co:        existing >= 0 ? DC[existing].co      : '—',
+          worked:    existing >= 0 ? DC[existing].worked  : '—',
+          wm:        existing >= 0 ? DC[existing].wm      : 0,
+          pct:       existing >= 0 ? DC[existing].pct     : 0,
+          inm:       existing >= 0 ? DC[existing].inm     : 0,
+          app:       existing >= 0 ? DC[existing].app     : '—'
+        };
+        if (existing >= 0) DC[existing] = colab;
+        else DC.push(colab);
+      });
+      populateUserSelects();
+    }
 
-  // ── 1. Usuarios (en tiempo real) ─────────────────────
-  const unsubUsuarios = onSnapshot(collection(db, 'usuarios'), snap => {
-    snap.docs.forEach((docSnap, i) => {
-      const data = docSnap.data();
-      const uid  = docSnap.id;
-      const existing = DC.findIndex(x => x.id === uid);
-      const colab = {
-        id:        uid,
-        nombre:    data.nombre || 'Sin nombre',
-        email:     data.email  || '',
-        rol:       data.rol    || 'colaborador',
-        activo:    data.activo !== false,
-        avatarUrl: data.avatarUrl || '',
-        color:     AV[existing >= 0 ? existing : (DC.length % AV.length)],
-        // Campos de sesión — se actualizan con listener de sesiones
-        status:    'offline',
-        checkin:   '—',
-        co:        '—',
-        worked:    '—',
-        wm:        0,
-        pct:       0,
-        inm:       0,
-        app:       '—'
-      };
-      if (existing >= 0) {
-        // Preservar datos de sesión al actualizar
-        const prev = DC[existing];
-        colab.status  = prev.status;
-        colab.checkin = prev.checkin;
-        colab.co      = prev.co;
-        colab.worked  = prev.worked;
-        colab.wm      = prev.wm;
-        colab.pct     = prev.pct;
-        colab.inm     = prev.inm;
-        colab.app     = prev.app;
-        colab.color   = prev.color;
-        DC[existing]  = colab;
-      } else {
-        DC.push(colab);
-      }
-    });
-    populateUserSelects();
-    refreshAll();
-  });
-  _listeners.push(unsubUsuarios);
-
-  // ── 2. Sesiones de hoy (en tiempo real) ──────────────
-  const qSesiones = query(
-    collection(db, 'sesiones'),
-    where('fecha', '==', hoy)
-  );
-  const unsubSesiones = onSnapshot(qSesiones, snap => {
-    // Reset status a offline
-    DC.forEach(c => {
-      c.status  = 'offline';
-      c.checkin = '—';
-      c.co      = '—';
-      c.worked  = '—';
-      c.wm      = 0;
-    });
-
-    snap.docs.forEach(docSnap => {
-      const s   = docSnap.data();
+    // ── 2. Sesiones de hoy ───────────────────────────────
+    const sesiones = await window._fbRESTQuery('sesiones', ['fecha', 'EQUAL', hoy]);
+    // Reset status
+    DC.forEach(c => { c.status='offline'; c.checkin='—'; c.co='—'; c.worked='—'; c.wm=0; });
+    sesiones.forEach(s => {
       const uid = s.uid;
-      const c   = DC.find(x => x.id === uid);
-      if (!c) return;
-
-      const checkInTime = tsToHHMM(s.checkIn);
-      const checkOutTime = s.checkOut ? tsToHHMM(s.checkOut) : null;
-      const minTrabajados = s.minutosTrabajados || 0;
-      const minActivos    = s.minutosActivos    || 0;
-      const pct = minTrabajados > 0 ? Math.round(minActivos / minTrabajados * 100) : 0;
-
-      c.checkin = checkInTime;
-      c.co      = checkOutTime;
-      c.worked  = minToWorked(minTrabajados);
-      c.wm      = minTrabajados;
-      c.pct     = pct;
-      c.inm     = s.minutosInactivos || 0;
-
-      if (s.estado === 'cerrada') {
-        c.status = 'offline';
-      } else if (s.estado === 'activa') {
-        // Determinar si inactivo: si minutosInactivos recientes > umbral (1 min)
-        const inactUmbral = 5; // minutos acumulados recientes
-        c.status = (s.minutosInactivos || 0) > inactUmbral ? 'away' : 'online';
+      const col = DC.find(x => x.id === uid);
+      if (!col) return;
+      col.checkin = s.checkIn ? tsToHHMM(s.checkIn) : '—';
+      col.co      = s.checkOut ? tsToHHMM(s.checkOut) : null;
+      col.wm      = s.minutosTrabajados || 0;
+      col.worked  = minToWorked(col.wm);
+      col.pct     = col.wm > 0 ? Math.round((s.minutosActivos||0)/col.wm*100) : 0;
+      col.inm     = s.minutosInactivos || 0;
+      col.status  = s.estado === 'cerrada' ? 'offline' : (col.inm > 5 ? 'away' : 'online');
+    });
+    DACT = [];
+    sesiones.forEach(s => {
+      const col = DC.find(x => x.id === s.uid);
+      const nombre = col ? col.nombre : s.uid;
+      if (s.estado === 'activa') {
+        DACT.push({t:'in', n:nombre, d:'Check-in · ' + (s.machineName||''), h: s.checkIn ? tiempoRelativo(s.checkIn) : ''});
+      } else if (s.estado === 'cerrada') {
+        DACT.push({t:'out', n:nombre, d:'Check-out · Jornada: '+minToWorked(s.minutosTrabajados||0), h: s.checkOut ? tiempoRelativo(s.checkOut) : ''});
+      }
+    });
+    DC.forEach(col => {
+      if (!sesiones.find(s => s.uid === col.id)) {
+        DACT.push({t:'alert', n:col.nombre, d:'Sin check-in hoy', h:''});
       }
     });
 
-    refreshAll();
-    actualizarFeedActividad(snap);
-  });
-  _listeners.push(unsubSesiones);
-
-  // ── 3. Apps en uso de hoy (en tiempo real) ────────────
-  const qApps = query(
-    collection(db, 'apps_uso'),
-    where('fecha', '==', hoy)
-  );
-  const unsubApps = onSnapshot(qApps, snap => {
+    // ── 3. Apps en uso de hoy ────────────────────────────
+    const appsHoy = await window._fbRESTQuery('apps_uso', ['fecha', 'EQUAL', hoy]);
     DAPPS = {};
-    snap.docs.forEach(docSnap => {
-      const data = docSnap.data();
-      const uid  = data.uid;
+    appsHoy.forEach(data => {
+      const uid = data.uid;
       if (!uid) return;
       const apps = data.apps || {};
       DAPPS[uid] = Object.entries(apps)
         .map(([a, m]) => ({a, m}))
         .sort((x, y) => y.m - x.m)
         .slice(0, 8);
+      // Actualizar app activa en DC
+      const col = DC.find(x => x.id === uid);
+      if (col && DAPPS[uid].length > 0) col.app = DAPPS[uid][0].a;
     });
-    if (vistaActual === 'productividad') renderProductividad();
-  });
-  _listeners.push(unsubApps);
 
-  // ── 4. Actividad reciente — últimos 50 registros ──────
-  const qActividad = query(
-    collection(db, 'actividad'),
-    where('fecha', '==', hoy),
-    orderBy('chunk', 'desc'),
-    limit(5)
-  );
-  const unsubActividad = onSnapshot(qActividad, snap => {
-    // Reconstruir inactividades desde registros
-    DINACT = {};
-    snap.docs.forEach(docSnap => {
-      const data = docSnap.data();
-      const uid  = data.uid;
-      if (!uid) return;
-      if (!DINACT[uid]) DINACT[uid] = [];
-      const registros = data.registros || [];
-      // Detectar períodos inactivos consecutivos
-      let inicioInact = null;
-      registros.forEach((r, idx) => {
-        if (r.inactivo && !inicioInact) {
-          inicioInact = r.timestamp;
-        } else if (!r.inactivo && inicioInact) {
-          const durMin = Math.round((new Date(r.timestamp) - new Date(inicioInact)) / 60000);
-          if (durMin >= 1) {
-            DINACT[uid].push({
-              i: new Date(inicioInact).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),
-              f: new Date(r.timestamp).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'}),
-              m: durMin
-            });
-          }
-          inicioInact = null;
-        }
-        // App activa — actualizar en DC
-        if (idx === registros.length - 1 && r.appActiva) {
-          const col = DC.find(x => x.id === uid);
-          if (col) col.app = r.appActiva;
-        }
-      });
-    });
-    if (vistaActual === 'tablero') renderLista();
-  });
-  _listeners.push(unsubActividad);
+    refreshAll();
+    document.getElementById('hora-act').textContent =
+      'Actualizado ' + new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+
+  } catch(e) {
+    console.error('cargarDatosFirestore error:', e);
+  }
 }
+
 
 function actualizarFeedActividad(snap) {
   DACT = [];
