@@ -638,48 +638,49 @@ window._fbRESTQuery = async function(collection, filters) {
   const user = auth.currentUser;
   if (!user) return [];
   const token = await user.getIdToken(true);
-  const url = 'https://firestore.googleapis.com/v1/projects/workforce-monitor-pixel/databases/(default)/documents:runQuery';
-  const body = {
-    structuredQuery: {
-      from: [{ collectionId: collection }],
-      where: filters ? {
-        fieldFilter: {
-          field: { fieldPath: filters[0] },
-          op: filters[1],
-          value: { stringValue: filters[2] }
-        }
-      } : undefined
-    }
-  };
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-  if (!resp.ok) { console.error('REST query error', resp.status); return []; }
-  const results = await resp.json();
-  return results.filter(r => r.document).map(r => {
-    const fields = r.document.fields || {};
-    const data = {};
-    Object.entries(fields).forEach(([k,v]) => {
-      if (v.stringValue  !== undefined) data[k] = v.stringValue;
-      else if (v.integerValue !== undefined) data[k] = parseInt(v.integerValue);
-      else if (v.doubleValue  !== undefined) data[k] = v.doubleValue;
-      else if (v.booleanValue !== undefined) data[k] = v.booleanValue;
-      else if (v.timestampValue !== undefined) data[k] = { toDate: () => new Date(v.timestampValue) };
-      else if (v.nullValue !== undefined) data[k] = null;
-      else if (v.mapValue !== undefined) {
-        const map = {};
-        Object.entries(v.mapValue.fields||{}).forEach(([mk,mv]) => {
-          if (mv.integerValue !== undefined) map[mk] = parseInt(mv.integerValue);
-          else if (mv.stringValue !== undefined) map[mk] = mv.stringValue;
+  // Use GET instead of runQuery to avoid permission issues
+  const base = 'https://firestore.googleapis.com/v1/projects/workforce-monitor-pixel/databases/(default)/documents/';
+  // Fetch all docs in collection via GET, filter client-side
+  let url = base + collection + '?pageSize=100';
+  const allDocs = [];
+  try {
+    while (url) {
+      const resp = await fetch(url, { headers: { Authorization: 'Bearer ' + token }});
+      if (!resp.ok) { console.error('REST GET error', resp.status, collection); return []; }
+      const data = await resp.json();
+      const docs = data.documents || [];
+      docs.forEach(doc => {
+        const fields = doc.fields || {};
+        const obj = {};
+        Object.entries(fields).forEach(([k,v]) => {
+          if (v.stringValue  !== undefined) obj[k] = v.stringValue;
+          else if (v.integerValue !== undefined) obj[k] = parseInt(v.integerValue);
+          else if (v.doubleValue  !== undefined) obj[k] = v.doubleValue;
+          else if (v.booleanValue !== undefined) obj[k] = v.booleanValue;
+          else if (v.timestampValue !== undefined) obj[k] = { toDate: () => new Date(v.timestampValue) };
+          else if (v.nullValue !== undefined) obj[k] = null;
+          else if (v.mapValue !== undefined) {
+            const map = {};
+            Object.entries(v.mapValue.fields||{}).forEach(([mk,mv]) => {
+              if (mv.integerValue !== undefined) map[mk] = parseInt(mv.integerValue);
+              else if (mv.stringValue !== undefined) map[mk] = mv.stringValue;
+            });
+            obj[k] = map;
+          }
         });
-        data[k] = map;
-      }
-    });
-    const name = r.document.name || '';
-    data._id = name.split('/').pop();
-    return data;
+        obj._id = doc.name.split('/').pop();
+        allDocs.push(obj);
+      });
+      // Handle pagination
+      url = data.nextPageToken ? base + collection + '?pageSize=100&pageToken=' + data.nextPageToken : null;
+    }
+  } catch(e) { console.error('REST GET exception:', e); return []; }
+  // Client-side filter
+  if (!filters) return allDocs;
+  const [field, op, value] = filters;
+  return allDocs.filter(doc => {
+    if (op === 'EQUAL') return String(doc[field]) === String(value);
+    return true;
   });
 };
 
