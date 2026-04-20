@@ -603,12 +603,12 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, creat
 import { getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, where, orderBy, limit, serverTimestamp, enableNetwork, disableNetwork } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey:"AIzaSyCUY99wqKMG7YOUy9Z5bGMfa_3z47Rt0mc",
-  authDomain:"workforce-monitor-pixel.firebaseapp.com",
-  projectId:"workforce-monitor-pixel",
-  storageBucket:"workforce-monitor-pixel.firebasestorage.app",
-  messagingSenderId:"107288241904",
-  appId:"1:107288241904:web:09d2325b5f5ad4b3fb8435"
+  apiKey:"AIzaSyDl41n9kWsFSPRZz3MkBXXiNohyhc0V6qk",
+  authDomain:"wfm-pixel.firebaseapp.com",
+  projectId:"wfm-pixel",
+  storageBucket:"wfm-pixel.firebasestorage.app",
+  messagingSenderId:"831186203922",
+  appId:"1:831186203922:web:b70eab28b59882738defcb"
 };
 
 const app  = initializeApp(firebaseConfig);
@@ -628,7 +628,7 @@ window._fbREST = async function(path) {
   const user = auth.currentUser;
   if (!user) return null;
   const token = await user.getIdToken(true); // force fresh token
-  const url = 'https://firestore.googleapis.com/v1/projects/workforce-monitor-pixel/databases/(default)/documents/' + path;
+  const url = 'https://firestore.googleapis.com/v1/projects/wfm-pixel/databases/(default)/documents/' + path;
   const resp = await fetch(url, { headers: { Authorization: 'Bearer ' + token }});
   if (!resp.ok) { console.error('REST error', resp.status, await resp.text()); return null; }
   return resp.json();
@@ -639,7 +639,7 @@ window._fbRESTQuery = async function(collection, filters) {
   if (!user) return [];
   const token = await user.getIdToken(true);
   // Use GET instead of runQuery to avoid permission issues
-  const base = 'https://firestore.googleapis.com/v1/projects/workforce-monitor-pixel/databases/(default)/documents/';
+  const base = 'https://firestore.googleapis.com/v1/projects/wfm-pixel/databases/(default)/documents/';
   // Fetch all docs in collection via GET, filter client-side
   let url = base + collection + '?pageSize=100';
   const allDocs = [];
@@ -697,7 +697,7 @@ window._fbRESTWrite = async function(collection, docId, data) {
     else if (v === null) fields[k] = { nullValue: null };
   });
   const qs = Object.keys(data).map(k => 'updateMask.fieldPaths=' + k).join('&');
-  const url = 'https://firestore.googleapis.com/v1/projects/workforce-monitor-pixel/databases/(default)/documents/' + collection + '/' + docId + '?' + qs;
+  const url = 'https://firestore.googleapis.com/v1/projects/wfm-pixel/databases/(default)/documents/' + collection + '/' + docId + '?' + qs;
   const resp = await fetch(url, {
     method: 'PATCH',
     headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
