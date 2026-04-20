@@ -623,9 +623,20 @@ window._fb = {
   enableNetwork, disableNetwork
 };
 
+// ── Helper: espera hasta que haya usuario autenticado (máx 5 seg) ──
+async function _waitForUser() {
+  if (auth.currentUser) return auth.currentUser;
+  return new Promise((resolve) => {
+    const unsub = auth.onAuthStateChanged(u => {
+      if (u) { unsub(); resolve(u); }
+    });
+    setTimeout(() => { unsub(); resolve(null); }, 5000);
+  });
+}
+
 // ── REST fallback for when SDK onSnapshot fails with permission-denied ──
 window._fbREST = async function(path) {
-  const user = auth.currentUser;
+  const user = await _waitForUser();
   if (!user) return null;
   const token = await user.getIdToken(true); // force fresh token
   const url = 'https://firestore.googleapis.com/v1/projects/wfm-pixel/databases/(default)/documents/' + path;
@@ -635,7 +646,7 @@ window._fbREST = async function(path) {
 };
 
 window._fbRESTQuery = async function(collection, filters) {
-  const user = auth.currentUser;
+  const user = await _waitForUser();
   if (!user) return [];
   const token = await user.getIdToken(true);
   // Use GET instead of runQuery to avoid permission issues
@@ -685,7 +696,7 @@ window._fbRESTQuery = async function(collection, filters) {
 };
 
 window._fbRESTWrite = async function(collection, docId, data) {
-  const user = auth.currentUser;
+  const user = await _waitForUser();
   if (!user) return false;
   const token = await user.getIdToken(true);
   const fields = {};
